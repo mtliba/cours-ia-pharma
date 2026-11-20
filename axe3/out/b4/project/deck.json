@@ -1,0 +1,84 @@
+{
+ "v": 5,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-11-19T22:00:00Z"
+ },
+ "lists": "css",
+ "format": {
+  "v": 1,
+  "shared": [
+   "project/deck.css"
+  ]
+ },
+ "title": "Axe 3 · Session 8 — Deep generative models",
+ "cover": "s01",
+ "order": [
+  "s01",
+  "s02",
+  "s03",
+  "s04",
+  "s05",
+  "s06",
+  "s07",
+  "s08",
+  "s09",
+  "s10",
+  "s11",
+  "s12",
+  "s13",
+  "s14",
+  "s15",
+  "s16",
+  "s17",
+  "s18",
+  "s19",
+  "s20",
+  "s21",
+  "s22",
+  "s23",
+  "s24",
+  "s25"
+ ],
+ "sections": {
+  "p0": {
+   "description": "Opening: two requests for new samples.",
+   "start": "s01"
+  },
+  "p1": {
+   "description": "What a generative model learns, and a map of the five families.",
+   "start": "s05"
+  },
+  "p2": {
+   "description": "Autoregressive models: factorization, sampling, and why language models hallucinate.",
+   "start": "s07"
+  },
+  "p3": {
+   "description": "Latent-variable models: the variational autoencoder and its bound; adversarial networks.",
+   "start": "s09"
+  },
+  "p4": {
+   "description": "Diffusion and flow matching: forward noising, the denoising loss, guidance, straight paths.",
+   "start": "s12"
+  },
+  "p5": {
+   "description": "Applications in the pharmaceutical sciences, evaluation, and a training step.",
+   "start": "s17"
+  }
+ },
+ "faces": {
+  "source-sans-3": {
+   "family": "Source Sans 3",
+   "href": "https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&display=swap"
+  },
+  "caveat": {
+   "family": "Caveat",
+   "href": "https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap"
+  },
+  "jetbrains-mono": {
+   "family": "JetBrains Mono",
+   "href": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap"
+  }
+ },
+ "designSystems": []
+}

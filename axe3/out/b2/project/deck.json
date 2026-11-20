@@ -1,0 +1,82 @@
+{
+ "v": 5,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-11-19T22:00:00Z"
+ },
+ "lists": "css",
+ "format": {
+  "v": 1,
+  "shared": [
+   "project/deck.css"
+  ]
+ },
+ "title": "Axe 3 · Session 6 — Attention and transformers",
+ "cover": "s01",
+ "order": [
+  "s01",
+  "s02",
+  "s03",
+  "s04",
+  "s05",
+  "s06",
+  "s07",
+  "s08",
+  "s09",
+  "s10",
+  "s11",
+  "s12",
+  "s13",
+  "s14",
+  "s15",
+  "s16",
+  "s17",
+  "s18",
+  "s19",
+  "s20",
+  "s21",
+  "s22",
+  "s23"
+ ],
+ "sections": {
+  "p0": {
+   "description": "Opening: a patient record is a sequence of unequal events.",
+   "start": "s01"
+  },
+  "p1": {
+   "description": "Tokens and embeddings: every modality becomes a sequence of vectors.",
+   "start": "s05"
+  },
+  "p2": {
+   "description": "Attention: queries, keys and values; multiple heads.",
+   "start": "s07"
+  },
+  "p3": {
+   "description": "The block, and how the model learns about order and time.",
+   "start": "s10"
+  },
+  "p4": {
+   "description": "Three families of transformers and their training objectives.",
+   "start": "s12"
+  },
+  "p5": {
+   "description": "Cost, a short implementation, applications beyond text, and limits.",
+   "start": "s14"
+  }
+ },
+ "faces": {
+  "source-sans-3": {
+   "family": "Source Sans 3",
+   "href": "https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&display=swap"
+  },
+  "caveat": {
+   "family": "Caveat",
+   "href": "https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap"
+  },
+  "jetbrains-mono": {
+   "family": "JetBrains Mono",
+   "href": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap"
+  }
+ },
+ "designSystems": []
+}

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IA pour les sciences pharmaceutiques</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Caveat:wght@700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Course notebook: white paper, navy ink, blue for what we show, red for the error. Sidebar of ten sessions, one reading column. */
+  --paper: #FFFFFF; --wash: #F2F4F8; --ink: #101B3F; --mute: #5A6379; --rule: #D9DDE6; --blue: #2A46C8; --pale: #E9EDFB; --red: #D22B3A; --pink: #FBE6E8; --ok: #1E7A4C; --okbg: #E3F3EA;
+  --body: 'Source Sans 3', 'Segoe UI', Arial, sans-serif; --hand: 'Caveat', 'Segoe Print', cursive; --mono: 'JetBrains Mono', Consolas, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--wash); color: var(--ink); font-family: var(--body); font-size: 18px; line-height: 1.55; }
+a { color: var(--blue); }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.shell { display: grid; grid-template-columns: 300px minmax(0, 1fr); min-height: 100vh; }
+nav { background: var(--ink); color: #fff; padding: 28px 20px; display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; align-self: start; height: 100vh; overflow-y: auto; }
+nav .brand { font-weight: 900; font-size: 21px; line-height: 1.2; color: #fff; text-decoration: none; margin-bottom: 4px; }
+nav .navk { font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #C3CCF3; margin: 18px 0 6px; }
+nav a[data-n] { display: flex; gap: 12px; align-items: baseline; color: #E3E8FB; text-decoration: none; padding: 7px 10px; border-radius: 6px; font-size: 16px; line-height: 1.3; }
+nav a[data-n] span { font-weight: 900; color: #8FA0E8; min-width: 20px; font-variant-numeric: tabular-nums; }
+nav a[data-n]:hover { background: #1B2A5C; }
+nav a[data-n].on { background: var(--blue); color: #fff; }
+nav a[data-n].on span { color: #fff; }
+main { padding: 40px 24px 96px; }
+.col { max-width: 820px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+h1 { font-size: 46px; font-weight: 900; line-height: 1.08; letter-spacing: -.5px; margin: 0; text-wrap: balance; }
+h2 { font-size: 38px; font-weight: 900; line-height: 1.1; letter-spacing: -.4px; margin: 0; text-wrap: balance; }
+h3 { font-size: 25px; font-weight: 900; line-height: 1.2; margin: 0; text-wrap: balance; }
+h4 { font-size: 19px; font-weight: 700; margin: 0; }
+p { margin: 0; }
+.tag, .k { font-size: 14px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--blue); }
+.k { color: var(--mute); }
+.lead { color: var(--mute); font-size: 19px; }
+.btn { display: inline-block; background: var(--blue); color: #fff; font-weight: 700; text-decoration: none; padding: 9px 16px; border-radius: 6px; border: 0; font: inherit; font-weight: 700; cursor: pointer; }
+.btn:hover { background: #1F36A3; }
+.btn.ghost { background: var(--paper); color: var(--blue); border: 2px solid var(--blue); padding: 7px 14px; }
+.sh { display: flex; flex-direction: column; gap: 12px; padding: 8px 0 6px; }
+.blk { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; padding: 26px 28px; display: flex; flex-direction: column; gap: 16px; }
+.say { border-left: 4px solid var(--rule); padding-left: 16px; color: #333C57; font-size: 17px; max-width: 68ch; }
+.band { font-weight: 700; border-top: 3px solid var(--ink); padding-top: 12px; }
+.sit { font-size: 19px; max-width: 66ch; }
+.qz { font-size: 26px; font-weight: 900; line-height: 1.2; color: var(--blue); text-wrap: balance; }
+.stt { font-size: 30px; font-weight: 900; line-height: 1.2; text-wrap: balance; }
+ul, ol { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; }
+ul.pts li, ol.take li { max-width: 68ch; }
+ul.obj { list-style: none; padding: 0; }
+ul.obj li { padding-left: 34px; position: relative; }
+ul.obj li::before { content: ""; position: absolute; left: 0; top: 5px; width: 16px; height: 16px; border: 3px solid var(--ink); }
+ol.plan li span { display: block; color: var(--mute); }
+ol.take li { font-weight: 700; }
+ul.refs { font-size: 16px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
+.card { background: var(--wash); border-radius: 8px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; }
+.nums { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 20px; }
+.bn { font-size: 52px; font-weight: 900; line-height: 1; color: var(--blue); letter-spacing: -1px; }
+.tw { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 16px; }
+th { text-align: left; font-size: 14px; color: var(--mute); border-bottom: 3px solid var(--ink); padding: 6px 12px 8px 0; }
+td { border-bottom: 1px solid var(--rule); padding: 9px 12px 9px 0; vertical-align: top; }
+td:first-child { font-weight: 700; }
+pre { background: var(--ink); color: #fff; font-family: var(--mono); font-size: 14px; line-height: 1.55; padding: 18px 20px; border-radius: 8px; margin: 0; }
+.eqb { background: var(--wash); border-left: 6px solid var(--blue); padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; align-items: center; overflow-x: auto; }
+.eq-l svg, .sy-s svg { max-width: 100%; height: auto; display: block; }
+.sy { display: flex; flex-direction: column; }
+.sy-r { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 18px; align-items: center; padding: 9px 0; border-top: 1px solid var(--rule); }
+.sy-r:first-child { border-top: 0; }
+.sy-s { display: flex; justify-content: flex-end; }
+.sy-t { font-size: 17px; }
+/* figures drawn for the slides, scaled to the column */
+.figwrap { position: relative; overflow: hidden; margin: 0 auto; }
+.plot { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.ly { position: absolute; left: 0; top: 0; }
+.ax { position: absolute; font-size: 27px; line-height: 1.2; color: var(--mute); margin: 0; }
+.ax-b { font-weight: 700; color: var(--ink); }
+.axw { position: absolute; font-size: 30px; line-height: 1.2; color: var(--ink); margin: 0; }
+.axh { position: absolute; font-family: var(--hand); font-weight: 700; font-size: 46px; line-height: 1; color: var(--blue); margin: 0; }
+/* exercises, quizzes */
+.ex { background: var(--blue); color: #fff; border-color: var(--blue); }
+.ex .tag { color: #C3CCF3; }
+.ex .meta { color: #E3E8FB; font-size: 16px; }
+details.sol summary { cursor: pointer; font-weight: 700; color: var(--blue); }
+details.sol[open] summary { margin-bottom: 4px; }
+.quiz { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; }
+.qcard { display: flex; flex-direction: column; gap: 10px; }
+.qq { font-weight: 700; }
+.qopts { display: flex; flex-direction: column; gap: 6px; }
+.qopt { text-align: left; font: inherit; font-size: 16px; color: var(--ink); background: var(--paper); border: 2px solid var(--rule); border-radius: 6px; padding: 8px 12px; cursor: pointer; }
+.qopt:hover { border-color: var(--blue); }
+.qopt.good { background: var(--okbg); border-color: var(--ok); font-weight: 700; }
+.qopt.bad { background: var(--pink); border-color: var(--red); }
+.qwhy { font-size: 16px; color: #333C57; }
+/* interactive figures */
+.widget { border: 2px solid var(--blue); border-radius: 10px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+.wk { font-family: var(--hand); font-size: 28px; line-height: 1; color: var(--blue); }
+.widget canvas { width: 100%; height: 300px; display: block; }
+.ctl { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; }
+.ctl label { display: flex; gap: 10px; align-items: center; font-size: 16px; font-weight: 700; }
+.ctl input[type=range] { width: 170px; accent-color: var(--blue); }
+.ctl input[type=number], .ctl select { font: inherit; font-size: 16px; padding: 4px 8px; width: 96px; border: 2px solid var(--rule); border-radius: 6px; }
+.ctl output { font-variant-numeric: tabular-nums; min-width: 48px; font-weight: 400; }
+.read { font-size: 17px; font-variant-numeric: tabular-nums; }
+.read b { color: var(--blue); }
+.read .warn { color: var(--red); font-weight: 700; }
+.toks { display: flex; flex-wrap: wrap; gap: 6px; }
+.toks button { font: inherit; font-size: 15px; padding: 5px 10px; border: 2px solid var(--rule); border-radius: 6px; background: var(--paper); cursor: pointer; color: var(--ink); }
+.toks button.on { border-color: var(--blue); background: var(--pale); font-weight: 700; }
+/* home */
+.sc { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; align-items: start; background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; padding: 16px 18px; text-decoration: none; color: var(--ink); }
+.sc:hover { border-color: var(--blue); }
+.scn { font-size: 34px; font-weight: 900; line-height: 1; color: var(--blue); font-variant-numeric: tabular-nums; }
+.sct { display: flex; flex-direction: column; gap: 2px; }
+.sct b { font-size: 20px; line-height: 1.25; }
+.sct span { color: var(--mute); font-size: 16px; }
+.list { display: flex; flex-direction: column; gap: 10px; }
+.h3s { display: block; font-size: 17px; font-weight: 400; color: var(--mute); }
+.next { display: flex; justify-content: flex-end; }
+.mob { display: none; }
+@media (max-width: 860px) {
+  .shell { grid-template-columns: minmax(0, 1fr); }
+  nav { position: static; height: auto; padding: 14px 16px; }
+  nav a[data-n], nav .navk { display: none; }
+  .mob { display: block; font: inherit; font-size: 16px; padding: 8px; border-radius: 6px; border: 0; width: 100%; }
+  main { padding: 24px 16px 72px; }
+  h1 { font-size: 34px; } h2 { font-size: 29px; }
+  .blk { padding: 20px 18px; }
+  .sy-r { grid-template-columns: minmax(0, 1fr); gap: 6px; } .sy-s { justify-content: flex-start; }
+}
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+</head>
+<body>
+<div class="shell">
+<nav aria-label="Séances du cours">
+<a class="brand" href="#home">IA pour les sciences pharmaceutiques</a>
+<p class="navk">Partie I · Fondamentaux (français)</p>
+<a href="#session-1" data-n="1"><span>1</span>Apprendre à partir de données</a><a href="#session-2" data-n="2"><span>2</span>Prédire : régression, classification et arbres</a><a href="#session-3" data-n="3"><span>3</span>Généraliser : surapprentissage et évaluation</a><a href="#session-4" data-n="4"><span>4</span>Réseaux de neurones et apprentissage profond</a><p class="navk">Part II · Advanced track (English)</p><a href="#session-5" data-n="5"><span>5</span>Optimization and generalization in deep networks</a><a href="#session-6" data-n="6"><span>6</span>Attention and transformers</a><a href="#session-7" data-n="7"><span>7</span>Representation learning and self-supervision</a><a href="#session-8" data-n="8"><span>8</span>Deep generative models</a><a href="#session-9" data-n="9"><span>9</span>Foundation models and adaptation</a><a href="#session-10" data-n="10"><span>10</span>Multimodal and longitudinal health data: from models to decisions</a>
+<select class="mob" id="mobnav" aria-label="Choisir une séance"></select>
+</nav>
+<main>
+<div class="col" id="home">
+<p class="tag">Axe 3 du projet pédagogique · Marouane Tliba</p>
+<h1>IA pour les sciences pharmaceutiques</h1>
+<p class="lead">Dix séances en deux parties. La première, en français, s’adresse à tous les étudiants, sans prérequis en programmation. La seconde, en anglais, s’adresse aux étudiants de master recherche, aux doctorants et aux chercheurs.</p>
+<p>Chaque séance se lit ici de haut en bas : les notions, les figures, la lecture de chaque formule symbole par symbole, des figures à manipuler, un exercice avec sa correction et trois questions d’auto-évaluation. Les diapositives de chaque séance sont accessibles depuis son en-tête.</p>
+<h3>Partie I · Fondamentaux <span class="h3s">tous publics, en français</span></h3>
+<div class="list"><a class="sc" href="#session-1"><span class="scn">1</span><span class="sct"><b>Apprendre à partir de données</b><span>Ce que veut dire « apprentissage automatique », sur un exemple de suivi thérapeutique.</span></span></a><a class="sc" href="#session-2"><span class="scn">2</span><span class="sct"><b>Prédire : régression, classification et arbres</b><span>Les modèles les plus utilisés sur des données cliniques en tableau.</span></span></a><a class="sc" href="#session-3"><span class="scn">3</span><span class="sct"><b>Généraliser : surapprentissage et évaluation</b><span>Comment savoir si un modèle fonctionnera sur de nouveaux patients.</span></span></a><a class="sc" href="#session-4"><span class="scn">4</span><span class="sct"><b>Réseaux de neurones et apprentissage profond</b><span>De quoi ils sont faits, comment ils apprennent, et quand ils valent la peine.</span></span></a></div>
+<h3>Part II · Advanced track <span class="h3s">for researchers, in English</span></h3>
+<div class="list"><a class="sc" href="#session-5"><span class="scn">5</span><span class="sct"><b>Optimization and generalization in deep networks</b><span>How deep networks are trained, why training fails, and why very large models still generalize.</span></span></a><a class="sc" href="#session-6"><span class="scn">6</span><span class="sct"><b>Attention and transformers</b><span>One architecture for text, molecules, proteins, images and patient records.</span></span></a><a class="sc" href="#session-7"><span class="scn">7</span><span class="sct"><b>Representation learning and self-supervision</b><span>Learning from unlabelled data: contrastive, non-contrastive, masked and predictive objectives.</span></span></a><a class="sc" href="#session-8"><span class="scn">8</span><span class="sct"><b>Deep generative models</b><span>Autoregressive models, variational autoencoders, diffusion and flow matching, with their uses in drug discovery and patient modelling.</span></span></a><a class="sc" href="#session-9"><span class="scn">9</span><span class="sct"><b>Foundation models and adaptation</b><span>From a large pre-trained model to a small clinical dataset: prompting, probing, low-rank adaptation, retrieval, and how to trust the result.</span></span></a><a class="sc" href="#session-10"><span class="scn">10</span><span class="sct"><b>Multimodal and longitudinal health data: from models to decisions</b><span>Irregular time, several modalities, mechanistic knowledge, and the step from a prediction to a decision about a dose.</span></span></a></div>
+<p class="say">Fil conducteur : le suivi thérapeutique du tacrolimus après greffe rénale. Les données d’exemple sont fictives ; chaque figure dit si elle est simulée, calculée ou schématique. Les exemples réels sont cités avec leur référence.</p>
+</div>
+<div class="col" id="session" hidden></div>
+</main>
+</div>
+<script>
+const DATA = {"a1": {"x": [2.0, 3.0, 3.0, 4.0, 5.0, 5.0, 6.0, 7.0, 7.0, 8.0, 9.0, 10.0], "y": [3.7, 5.1, 4.4, 4.8, 6.3, 5.8, 8.0, 10.4, 8.4, 9.3, 11.6, 12.5], "w": 1.136, "b": 0.995}, "a2": {"x": [6.1, 9.1, 8.8, 4.8, 5.3, 4.8, 7.3, 5.9, 7.7, 1.8, 9.6, 5.8, 7.6, 5.7, 5.1, 7.1, 7.9, 5.5, 5.6, 7.6, 4.0, 2.5, 6.9, 4.5, 1.6, 4.1, 4.9, 3.3, 2.6, 6.1], "y": [0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0], "w": 0.691, "b": -4.483}, "a3": {"x": [1.0, 2.5, 4.0, 6.0, 8.0, 10.5, 13.0, 16.0, 19.0, 22.5], "y": [28.06, 36.18, 53.74, 57.48, 67.34, 65.53, 69.5, 80.31, 79.22, 79.37], "xs": [0.6, 0.79, 0.98, 1.17, 1.36, 1.55, 1.74, 1.93, 2.12, 2.31, 2.5, 2.69, 2.88, 3.07, 3.26, 3.45, 3.64, 3.83, 4.02, 4.21, 4.4, 4.59, 4.78, 4.97, 5.16, 5.35, 5.54, 5.73, 5.92, 6.11, 6.3, 6.49, 6.68, 6.87, 7.06, 7.25, 7.44, 7.63, 7.82, 8.01, 8.2, 8.39, 8.58, 8.77, 8.96, 9.15, 9.34, 9.53, 9.72, 9.91, 10.1, 10.29, 10.48, 10.67, 10.86, 11.05, 11.24, 11.43, 11.62, 11.81, 11.99, 12.18, 12.37, 12.56, 12.75, 12.94, 13.13, 13.32, 13.51, 13.7, 13.89, 14.08, 14.27, 14.46, 14.65, 14.84, 15.03, 15.22, 15.41, 15.6, 15.79, 15.98, 16.17, 16.36, 16.55, 16.74, 16.93, 17.12, 17.31, 17.5, 17.69, 17.88, 18.07, 18.26, 18.45, 18.64, 18.83, 19.02, 19.21, 19.4, 19.59, 19.78, 19.97, 20.16, 20.35, 20.54, 20.73, 20.92, 21.11, 21.3, 21.49, 21.68, 21.87, 22.06, 22.25, 22.44, 22.63, 22.82, 23.01, 23.2], "fits": {"1": [40.08, 40.51, 40.93, 41.36, 41.78, 42.21, 42.63, 43.06, 43.48, 43.91, 44.33, 44.76, 45.18, 45.61, 46.03, 46.46, 46.88, 47.31, 47.73, 48.16, 48.58, 49.01, 49.43, 49.86, 50.28, 50.71, 51.13, 51.56, 51.98, 52.41, 52.83, 53.26, 53.68, 54.11, 54.53, 54.96, 55.38, 55.81, 56.23, 56.66, 57.08, 57.51, 57.93, 58.36, 58.78, 59.21, 59.63, 60.05, 60.48, 60.9, 61.33, 61.75, 62.18, 62.6, 63.03, 63.45, 63.88, 64.3, 64.73, 65.15, 65.58, 66.0, 66.43, 66.85, 67.28, 67.7, 68.13, 68.55, 68.98, 69.4, 69.83, 70.25, 70.68, 71.1, 71.53, 71.95, 72.38, 72.8, 73.23, 73.65, 74.08, 74.5, 74.93, 75.35, 75.78, 76.2, 76.63, 77.05, 77.48, 77.9, 78.33, 78.75, 79.18, 79.6, 80.03, 80.45, 80.88, 81.3, 81.73, 82.15, 82.58, 83.0, 83.43, 83.85, 84.28, 84.7, 85.13, 85.55, 85.98, 86.4, 86.83, 87.25, 87.68, 88.1, 88.53, 88.95, 89.38, 89.8, 90.23, 90.65], "2": [29.57, 30.62, 31.66, 32.69, 33.71, 34.71, 35.71, 36.69, 37.66, 38.63, 39.58, 40.52, 41.45, 42.37, 43.27, 44.17, 45.05, 45.93, 46.79, 47.64, 48.48, 49.31, 50.13, 50.94, 51.73, 52.52, 53.29, 54.06, 54.81, 55.55, 56.28, 57.0, 57.71, 58.4, 59.09, 59.76, 60.43, 61.08, 61.72, 62.35, 62.97, 63.58, 64.18, 64.76, 65.34, 65.9, 66.45, 67.0, 67.53, 68.05, 68.55, 69.05, 69.54, 70.01, 70.48, 70.93, 71.38, 71.81, 72.23, 72.64, 73.03, 73.42, 73.8, 74.16, 74.52, 74.86, 75.19, 75.51, 75.82, 76.12, 76.41, 76.68, 76.95, 77.2, 77.45, 77.68, 77.9, 78.11, 78.31, 78.5, 78.67, 78.84, 78.99, 79.14, 79.27, 79.39, 79.5, 79.6, 79.69, 79.77, 79.84, 79.89, 79.93, 79.97, 79.99, 80.0, 80.0, 79.99, 79.97, 79.93, 79.89, 79.84, 79.77, 79.69, 79.6, 79.5, 79.39, 79.27, 79.14, 78.99, 78.84, 78.67, 78.5, 78.31, 78.11, 77.9, 77.68, 77.45, 77.2, 76.95], "3": [25.61, 27.13, 28.61, 30.07, 31.49, 32.89, 34.25, 35.58, 36.89, 38.16, 39.4, 40.62, 41.8, 42.96, 44.09, 45.2, 46.27, 47.32, 48.35, 49.34, 50.32, 51.26, 52.19, 53.08, 53.96, 54.81, 55.64, 56.44, 57.22, 57.98, 58.72, 59.44, 60.13, 60.81, 61.46, 62.09, 62.71, 63.3, 63.88, 64.44, 64.98, 65.5, 66.0, 66.49, 66.96, 67.42, 67.86, 68.28, 68.69, 69.08, 69.46, 69.82, 70.17, 70.51, 70.83, 71.15, 71.45, 71.73, 72.01, 72.27, 72.53, 72.77, 73.01, 73.23, 73.44, 73.65, 73.85, 74.04, 74.22, 74.39, 74.56, 74.72, 74.87, 75.02, 75.16, 75.29, 75.43, 75.55, 75.68, 75.79, 75.91, 76.02, 76.13, 76.24, 76.34, 76.45, 76.55, 76.65, 76.75, 76.85, 76.95, 77.06, 77.16, 77.26, 77.37, 77.48, 77.59, 77.7, 77.82, 77.94, 78.06, 78.19, 78.32, 78.46, 78.6, 78.75, 78.9, 79.07, 79.23, 79.41, 79.59, 79.78, 79.98, 80.19, 80.41, 80.63, 80.87, 81.12, 81.37, 81.64], "4": [21.62, 23.93, 26.13, 28.25, 30.27, 32.21, 34.06, 35.83, 37.52, 39.13, 40.67, 42.14, 43.55, 44.88, 46.15, 47.37, 48.52, 49.62, 50.66, 51.66, 52.6, 53.5, 54.35, 55.17, 55.94, 56.67, 57.36, 58.02, 58.65, 59.25, 59.82, 60.36, 60.87, 61.36, 61.83, 62.28, 62.7, 63.11, 63.51, 63.88, 64.25, 64.6, 64.93, 65.26, 65.58, 65.89, 66.19, 66.49, 66.78, 67.07, 67.35, 67.63, 67.91, 68.19, 68.47, 68.74, 69.02, 69.29, 69.57, 69.85, 70.13, 70.42, 70.7, 70.99, 71.29, 71.58, 71.88, 72.18, 72.49, 72.8, 73.11, 73.42, 73.74, 74.06, 74.38, 74.7, 75.03, 75.35, 75.68, 76.0, 76.33, 76.65, 76.97, 77.29, 77.61, 77.92, 78.23, 78.53, 78.82, 79.1, 79.38, 79.64, 79.9, 80.14, 80.37, 80.58, 80.78, 80.96, 81.11, 81.25, 81.37, 81.46, 81.53, 81.57, 81.58, 81.56, 81.51, 81.43, 81.3, 81.14, 80.94, 80.7, 80.42, 80.08, 79.7, 79.27, 78.79, 78.25, 77.65, 76.99], "5": [22.15, 24.3, 26.37, 28.37, 30.29, 32.14, 33.93, 35.64, 37.29, 38.87, 40.39, 41.85, 43.25, 44.59, 45.87, 47.09, 48.27, 49.39, 50.46, 51.48, 52.46, 53.39, 54.27, 55.12, 55.92, 56.69, 57.41, 58.11, 58.76, 59.39, 59.98, 60.55, 61.08, 61.59, 62.08, 62.54, 62.98, 63.39, 63.79, 64.17, 64.53, 64.88, 65.21, 65.53, 65.84, 66.14, 66.43, 66.71, 66.98, 67.25, 67.51, 67.77, 68.02, 68.27, 68.52, 68.77, 69.01, 69.26, 69.51, 69.76, 70.02, 70.28, 70.54, 70.8, 71.07, 71.34, 71.62, 71.91, 72.2, 72.49, 72.79, 73.09, 73.4, 73.72, 74.04, 74.37, 74.69, 75.03, 75.37, 75.71, 76.05, 76.39, 76.74, 77.08, 77.43, 77.77, 78.11, 78.45, 78.78, 79.1, 79.42, 79.73, 80.03, 80.32, 80.59, 80.85, 81.08, 81.31, 81.5, 81.68, 81.83, 81.95, 82.04, 82.1, 82.13, 82.11, 82.06, 81.96, 81.81, 81.62, 81.37, 81.07, 80.71, 80.28, 79.79, 79.23, 78.59, 77.88, 77.08, 76.2], "6": [27.24, 27.34, 27.75, 28.43, 29.33, 30.42, 31.67, 33.05, 34.54, 36.1, 37.72, 39.37, 41.03, 42.7, 44.35, 45.97, 47.55, 49.09, 50.56, 51.97, 53.31, 54.58, 55.77, 56.87, 57.9, 58.85, 59.71, 60.5, 61.21, 61.84, 62.4, 62.89, 63.31, 63.67, 63.98, 64.24, 64.45, 64.62, 64.75, 64.85, 64.92, 64.98, 65.02, 65.05, 65.07, 65.1, 65.12, 65.16, 65.21, 65.27, 65.36, 65.46, 65.59, 65.75, 65.94, 66.17, 66.42, 66.71, 67.03, 67.39, 67.78, 68.2, 68.66, 69.15, 69.66, 70.21, 70.77, 71.36, 71.97, 72.59, 73.23, 73.87, 74.51, 75.15, 75.79, 76.41, 77.02, 77.61, 78.18, 78.71, 79.21, 79.67, 80.09, 80.46, 80.78, 81.04, 81.25, 81.39, 81.47, 81.49, 81.44, 81.33, 81.15, 80.91, 80.6, 80.24, 79.83, 79.36, 78.86, 78.32, 77.76, 77.19, 76.62, 76.07, 75.55, 75.08, 74.68, 74.38, 74.19, 74.15, 74.28, 74.62, 75.2, 76.06, 77.24, 78.78, 80.74, 83.15, 86.07, 89.57], "7": [26.22, 26.83, 27.62, 28.56, 29.65, 30.86, 32.17, 33.56, 35.02, 36.53, 38.07, 39.64, 41.21, 42.78, 44.34, 45.88, 47.39, 48.85, 50.27, 51.64, 52.95, 54.19, 55.38, 56.49, 57.53, 58.5, 59.4, 60.23, 60.98, 61.66, 62.28, 62.82, 63.31, 63.73, 64.09, 64.4, 64.66, 64.87, 65.04, 65.17, 65.27, 65.35, 65.4, 65.43, 65.45, 65.46, 65.47, 65.48, 65.5, 65.53, 65.57, 65.64, 65.72, 65.83, 65.96, 66.13, 66.33, 66.57, 66.84, 67.15, 67.5, 67.88, 68.31, 68.77, 69.26, 69.79, 70.35, 70.95, 71.56, 72.2, 72.86, 73.54, 74.22, 74.91, 75.61, 76.29, 76.97, 77.63, 78.26, 78.87, 79.44, 79.97, 80.46, 80.89, 81.26, 81.57, 81.81, 81.98, 82.07, 82.08, 82.01, 81.86, 81.62, 81.3, 80.89, 80.41, 79.86, 79.24, 78.56, 77.83, 77.06, 76.28, 75.49, 74.72, 73.98, 73.32, 72.74, 72.3, 72.01, 71.93, 72.1, 72.57, 73.38, 74.61, 76.3, 78.54, 81.39, 84.94, 89.27, 94.47], "8": [32.88, 29.82, 28.04, 27.32, 27.42, 28.18, 29.44, 31.05, 32.92, 34.95, 37.06, 39.19, 41.29, 43.32, 45.27, 47.1, 48.81, 50.39, 51.83, 53.14, 54.32, 55.39, 56.34, 57.19, 57.96, 58.64, 59.25, 59.81, 60.31, 60.78, 61.21, 61.62, 62.0, 62.38, 62.74, 63.09, 63.43, 63.77, 64.1, 64.43, 64.75, 65.06, 65.35, 65.64, 65.91, 66.16, 66.4, 66.61, 66.81, 66.98, 67.13, 67.26, 67.36, 67.45, 67.53, 67.59, 67.64, 67.68, 67.73, 67.78, 67.85, 67.93, 68.04, 68.18, 68.36, 68.58, 68.86, 69.19, 69.58, 70.04, 70.57, 71.17, 71.84, 72.59, 73.4, 74.28, 75.22, 76.21, 77.24, 78.3, 79.38, 80.45, 81.5, 82.52, 83.47, 84.34, 85.1, 85.72, 86.18, 86.44, 86.49, 86.3, 85.84, 85.09, 84.04, 82.66, 80.96, 78.93, 76.58, 73.92, 70.99, 67.83, 64.49, 61.05, 57.6, 54.27, 51.18, 48.53, 46.5, 45.33, 45.3, 46.73, 49.97, 55.45, 63.63, 75.03, 90.26, 109.98, 134.93, 165.92], "9": [60.03, 41.04, 29.0, 22.25, 19.42, 19.4, 21.29, 24.4, 28.17, 32.19, 36.16, 39.88, 43.22, 46.1, 48.5, 50.43, 51.91, 53.02, 53.8, 54.34, 54.68, 54.91, 55.09, 55.25, 55.46, 55.73, 56.1, 56.59, 57.19, 57.9, 58.73, 59.64, 60.63, 61.66, 62.72, 63.77, 64.78, 65.73, 66.6, 67.36, 68.0, 68.5, 68.85, 69.05, 69.1, 69.0, 68.76, 68.41, 67.95, 67.42, 66.83, 66.22, 65.61, 65.04, 64.53, 64.11, 63.81, 63.66, 63.68, 63.87, 64.26, 64.85, 65.63, 66.61, 67.77, 69.09, 70.55, 72.11, 73.74, 75.4, 77.03, 78.6, 80.05, 81.32, 82.38, 83.17, 83.65, 83.79, 83.55, 82.91, 81.88, 80.46, 78.67, 76.55, 74.17, 71.6, 68.93, 66.31, 63.85, 61.72, 60.11, 59.2, 59.19, 60.31, 62.77, 66.78, 72.54, 80.21, 89.94, 101.82, 115.87, 132.04, 150.15, 169.92, 190.9, 212.45, 233.74, 253.65, 270.77, 283.38, 289.33, 286.04, 270.42, 238.82, 186.94, 109.75, 1.43, -144.75, -336.49, -582.61]}, "tr": {"1": 7.47, "2": 3.96, "3": 3.34, "4": 2.72, "5": 2.71, "6": 1.92, "7": 1.9, "8": 1.64, "9": 0.0}, "te": {"1": 8.04, "2": 5.37, "3": 4.71, "4": 5.01, "5": 5.06, "6": 5.53, "7": 5.74, "8": 11.23, "9": 60.5}}, "b2": {"tok": ["Tx day 0", "Tac 8 mg", "C₀ 14.2", "Creat ↑", "Tac 6 mg", "C₀ ?"], "sc": [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [1.0, 0.5, 0.0, 0.0, 0.0, 0.0], [0.2, 2.2, 0.6, 0.0, 0.0, 0.0], [0.3, 1.2, 2.0, 0.5, 0.0, 0.0], [0.1, 0.6, 2.4, 1.6, 0.4, 0.0], [-0.4, 0.8, 1.7, 0.6, 2.0, -1.0]]}, "b3": {"sims": [0.9, 0.7, 0.3, 0.0, -0.2, -0.5]}, "b4": {"ring": [[0.811, 0.595], [-0.005, 0.961], [0.297, -0.935], [-0.835, -0.569], [0.726, 0.557], [-0.84, 0.453], [-0.978, 0.112], [0.555, 0.829], [-0.048, -1.043], [0.764, 0.648], [-0.743, 0.645], [-0.841, -0.015], [-0.817, 0.3], [-0.875, -0.555], [-0.044, -1.134], [1.033, -0.207], [-0.291, 0.918], [-0.643, -0.801], [-0.293, -0.821], [-0.277, 1.01], [1.009, 0.115], [1.031, -0.084], [-0.364, 0.943], [-0.44, 1.011], [0.817, -0.647], [-0.887, -0.481], [-1.026, 0.123], [0.175, -0.842], [0.967, 0.156], [-0.337, -1.044], [-0.672, 0.762], [0.842, 0.56], [-0.526, -0.838], [0.817, -0.445], [0.272, 0.917], [-0.713, -0.779], [-0.318, 1.006], [-0.076, -1.008], [-0.125, -0.946], [0.297, 0.855], [0.533, -0.906], [-0.54, -0.786], [-0.345, -0.85], [0.436, -0.808], [-0.918, 0.425], [0.103, -1.032], [0.852, -0.63], [0.931, 0.598], [0.564, -0.8], [-0.742, 0.583], [-0.969, 0.126], [0.703, 0.756], [-0.256, -0.987], [-0.318, 0.923], [0.618, -0.715], [-0.097, 0.997], [-0.888, -0.281], [-0.792, 0.601], [-0.775, -0.748], [0.375, 0.839], [0.463, 0.905], [0.048, -1.004], [-0.035, -0.978], [-0.946, -0.419], [0.882, -0.484], [0.263, 0.912], [0.581, -0.934], [0.478, 0.801], [1.042, -0.146], [-0.83, -0.693], [-0.79, -0.685], [1.015, -0.212], [0.125, -0.989], [0.239, -0.962], [0.869, 0.37], [-0.637, 0.663], [0.822, 0.504], [0.313, 1.042], [0.238, 0.914], [0.584, -0.779], [0.837, 0.704], [-0.282, 0.988], [-1.001, 0.182], [0.553, -0.766], [0.986, -0.179], [-0.331, -0.86], [0.219, 0.976], [-1.016, -0.323], [-0.239, -0.903], [0.993, 0.393]], "eps": [[0.714, 0.028], [0.837, 0.594], [-0.101, 0.726], [1.286, 0.235], [-0.356, 0.719], [1.901, -0.211], [-0.092, -0.136], [1.223, -1.837], [0.366, 1.192], [-0.813, 1.489], [0.535, -0.549], [0.204, -1.534], [-0.566, 1.827], [-0.894, 1.845], [-0.082, 0.995], [0.044, -2.241], [-0.573, 0.19], [-1.151, -1.347], [0.366, -0.649], [-1.696, -0.684], [0.861, -0.474], [0.935, 1.527], [0.033, -1.13], [-1.302, -0.026], [0.881, 0.269], [0.547, -0.443], [0.3, -0.471], [-0.326, -1.292], [-1.572, -0.482], [-1.108, -0.959], [0.671, -0.107], [2.914, 0.926], [-0.633, 0.778], [0.357, -0.686], [1.103, -0.775], [-3.058, 0.794], [-0.617, 1.486], [-0.65, -1.181], [1.548, -1.075], [0.203, 1.45], [0.114, -0.081], [0.102, 0.839], [-0.807, 0.611], [0.577, 2.333], [-0.337, -0.915], [0.736, -0.397], [0.289, 0.133], [1.168, -0.657], [-0.092, -2.552], [-0.89, 1.536], [-0.682, -0.701], [-1.218, 0.58], [0.178, -1.187], [0.667, 0.26], [0.754, -0.641], [1.738, 0.41], [-0.117, -0.519], [-0.245, 0.859], [-0.269, 1.078], [0.581, 1.346], [0.814, -0.063], [-1.909, 0.299], [0.789, 0.163], [0.556, -0.472], [-0.38, -0.942], [1.362, 0.158], [-0.492, -1.332], [-0.153, 1.443], [0.462, -0.725], [1.429, 1.429], [0.981, 0.789], [1.156, 0.543], [0.775, -0.78], [1.5, 0.231], [2.024, -2.042], [0.705, 0.981], [-0.343, 0.452], [0.748, 0.577], [-0.54, -0.142], [1.019, 1.277], [0.099, 0.077], [0.2, 1.038], [-1.054, -1.329], [0.124, -1.107], [-0.587, 0.086], [0.483, -1.072], [0.802, -1.774], [0.545, -1.578], [-1.275, 0.642], [-0.406, -0.796]]}};
+const WIDGETS = {};
+const C = { ink: '#101B3F', mute: '#5A6379', rule: '#D9DDE6', blue: '#2A46C8', red: '#D22B3A', amber: '#C77700', grey: '#7F88A0', pale: '#E9EDFB' };
+let UID = 0;
+function el(h) { const t = document.createElement('template'); t.innerHTML = h.trim(); return t.content.firstElementChild; }
+function slider(host, label, min, max, step, val, fmt) {
+  const id = 'ctl' + (++UID), f = fmt || (v => v);
+  const l = el(`<label for="${id}">${label}<input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}"><output for="${id}"></output></label>`);
+  host.appendChild(l); const i = l.querySelector('input'), o = l.querySelector('output');
+  const upd = () => { o.textContent = f(+i.value); }; i.addEventListener('input', upd); upd(); return i;
+}
+function frame(w, label) {
+  const ctl = el('<div class="ctl"></div>'), cv = el('<canvas role="img"></canvas>'), read = el('<p class="read" aria-live="polite"></p>');
+  cv.setAttribute('aria-label', label || 'Interactive figure'); w.append(ctl, cv, read); return { ctl, cv, read };
+}
+function plot(cv, o) {
+  const dpr = window.devicePixelRatio || 1, W = cv.clientWidth || 600, H = cv.clientHeight || 300;
+  cv.width = W * dpr; cv.height = H * dpr; const c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, W, H);
+  const L = 60, R = 14, T = 24, B = o.xl ? 48 : 30;
+  const X = v => L + (v - o.xr[0]) / (o.xr[1] - o.xr[0]) * (W - L - R), Y = v => H - B - (v - o.yr[0]) / (o.yr[1] - o.yr[0]) * (H - T - B);
+  c.font = '14px "Source Sans 3", Arial, sans-serif'; c.lineWidth = 1; c.strokeStyle = C.rule; c.fillStyle = C.mute;
+  (o.yt || []).forEach(v => { c.beginPath(); c.moveTo(L, Y(v)); c.lineTo(W - R, Y(v)); c.stroke(); c.textAlign = 'right'; c.textBaseline = 'middle'; c.fillText(o.yf ? o.yf(v) : v, L - 8, Y(v)); });
+  (o.xt || []).forEach(v => { if (o.xgrid !== false) { c.beginPath(); c.moveTo(X(v), T); c.lineTo(X(v), H - B); c.stroke(); } c.textAlign = 'center'; c.textBaseline = 'top'; c.fillText(o.xf ? o.xf(v) : v, X(v), H - B + 6); });
+  c.strokeStyle = C.mute; c.lineWidth = 1.5; c.beginPath(); c.moveTo(L, T); c.lineTo(L, H - B); c.lineTo(W - R, H - B); c.stroke();
+  c.fillStyle = C.ink; c.font = '600 14px "Source Sans 3", Arial, sans-serif';
+  if (o.xl) { c.textAlign = 'center'; c.textBaseline = 'bottom'; c.fillText(o.xl, (L + W - R) / 2, H - 4); }
+  if (o.yl) { c.textAlign = 'left'; c.textBaseline = 'top'; c.fillText(o.yl, L, 2); }
+  c.save(); c.beginPath(); c.rect(L, T, W - L - R, H - T - B); c.clip(); o.draw(c, X, Y); c.restore();
+}
+function line(c, X, Y, xs, ys, col, lw, dash) { c.strokeStyle = col; c.lineWidth = lw || 2.5; c.setLineDash(dash || []); c.beginPath(); xs.forEach((x, i) => { i ? c.lineTo(X(x), Y(ys[i])) : c.moveTo(X(x), Y(ys[i])); }); c.stroke(); c.setLineDash([]); }
+function dots(c, X, Y, xs, ys, col, r) { xs.forEach((x, i) => { c.fillStyle = col; c.beginPath(); c.arc(X(x), Y(ys[i]), r || 5, 0, 7); c.fill(); c.strokeStyle = '#fff'; c.lineWidth = 1.5; c.stroke(); }); }
+function barchart(cv, labels, vals, cols, yl) {
+  plot(cv, { xr: [0, labels.length], yr: [0, 1], yt: [0, 0.25, 0.5, 0.75, 1], xt: labels.map((_, k) => k + 0.5), xf: v => labels[Math.floor(v)], xgrid: false, yl,
+    draw(c, X, Y) { vals.forEach((v, k) => { if (v == null) return; c.fillStyle = cols[k]; c.fillRect(X(k + 0.18), Y(v), X(k + 0.82) - X(k + 0.18), Y(0) - Y(v)); c.fillStyle = C.ink; c.font = '600 13px "Source Sans 3", Arial'; c.textAlign = 'center'; c.textBaseline = 'bottom'; c.fillText(v.toFixed(2), X(k + 0.5), Y(v) - 3); }); } });
+}
+const fr = (v, n) => v.toFixed(n).replace('.', ',').replace('-', '−');
+const softmax = a => { const m = Math.max(...a), e = a.map(v => Math.exp(v - m)), s = e.reduce((p, q) => p + q, 0); return e.map(v => v / s); };
+
+WIDGETS.fitline = function (w) {
+  const d = DATA.a1, f = frame(w, 'Droite ajustable sur douze patients');
+  const sw = slider(f.ctl, 'Pente w', 0, 2, 0.01, 0.4, v => fr(v, 2)), sb = slider(f.ctl, 'Décalage b', -2, 8, 0.1, 3, v => fr(v, 1));
+  const b1 = el('<button type="button" class="btn ghost">10 pas de descente</button>'), b2 = el('<button type="button" class="btn ghost">Meilleure droite</button>'); f.ctl.append(b1, b2);
+  const mse = (W, B) => d.x.reduce((s, x, i) => s + (d.y[i] - (W * x + B)) ** 2, 0) / d.x.length;
+  function draw() {
+    const W = +sw.value, B = +sb.value;
+    plot(f.cv, { xr: [0, 12], yr: [0, 16], xt: [0, 2, 4, 6, 8, 10, 12], yt: [0, 4, 8, 12, 16], xl: 'Dose (mg/jour)', yl: 'Concentration (ng/mL)',
+      draw(c, X, Y) { d.x.forEach((x, i) => { c.strokeStyle = C.red; c.lineWidth = 2; c.beginPath(); c.moveTo(X(x), Y(d.y[i])); c.lineTo(X(x), Y(W * x + B)); c.stroke(); }); line(c, X, Y, [0, 12], [B, 12 * W + B], C.blue, 3); dots(c, X, Y, d.x, d.y, C.ink); } });
+    f.read.innerHTML = `Erreur moyenne : <b>${fr(mse(W, B), 2)}</b> · minimum possible : ${fr(mse(d.w, d.b), 2)}. Les segments rouges sont les écarts.`;
+  }
+  const set = (W, B) => { sw.value = W; sb.value = B; sw.dispatchEvent(new Event('input')); sb.dispatchEvent(new Event('input')); };
+  b1.onclick = () => { let W = +sw.value, B = +sb.value; for (let k = 0; k < 10; k++) { let gw = 0, gb = 0; d.x.forEach((x, i) => { const e = W * x + B - d.y[i]; gw += 2 * e * x / d.x.length; gb += 2 * e / d.x.length; }); W -= 0.008 * gw; B -= 0.008 * gb; } set(W, B); };
+  b2.onclick = () => set(d.w, d.b); sw.addEventListener('input', draw); sb.addEventListener('input', draw); w._draw = draw; draw();
+};
+
+WIDGETS.logistic = function (w) {
+  const d = DATA.a2, f = frame(w, 'Courbe logistique ajustable'), sig = z => 1 / (1 + Math.exp(-z));
+  const sw = slider(f.ctl, 'Poids w', 0, 3, 0.01, d.w, v => fr(v, 2)), sb = slider(f.ctl, 'Biais b', -20, 0, 0.1, d.b, v => fr(v, 1));
+  function draw() {
+    const W = +sw.value, B = +sb.value, xs = Array.from({ length: 121 }, (_, i) => i / 10);
+    plot(f.cv, { xr: [0, 12], yr: [-0.06, 1.06], xt: [0, 2, 4, 6, 8, 10, 12], yt: [0, 0.25, 0.5, 0.75, 1], yf: v => Math.round(v * 100) + ' %', xl: 'Dose (mg/jour)', yl: 'Probabilité de surexposition',
+      draw(c, X, Y) { line(c, X, Y, [0, 12], [0.5, 0.5], C.red, 1.5, [6, 5]); line(c, X, Y, xs, xs.map(x => sig(W * x + B)), C.blue, 3); d.x.forEach((x, i) => dots(c, X, Y, [x], [d.y[i]], d.y[i] ? C.red : C.ink, 4.5)); } });
+    const ll = -d.x.reduce((s, x, i) => { const p = Math.min(1 - 1e-9, Math.max(1e-9, sig(W * x + B))); return s + (d.y[i] ? Math.log(p) : Math.log(1 - p)); }, 0) / d.x.length;
+    f.read.innerHTML = `Risque annoncé à 8 mg/jour : <b>${Math.round(sig(W * 8 + B) * 100)} %</b> · coût du modèle sur ces 30 visites : <b>${fr(ll, 3)}</b> (plus petit = mieux).`;
+  }
+  sw.addEventListener('input', draw); sb.addEventListener('input', draw); w._draw = draw; draw();
+};
+
+WIDGETS.overfit = function (w) {
+  const d = DATA.a3, f = frame(w, 'Polynôme de degré réglable sur dix mesures');
+  const sd = slider(f.ctl, 'Souplesse (degré du polynôme)', 1, 9, 1, 3);
+  function draw() {
+    const g = +sd.value;
+    plot(f.cv, { xr: [0, 24], yr: [0, 120], xt: [0, 6, 12, 18, 24], yt: [0, 30, 60, 90, 120], xl: 'Concentration (ng/mL)', yl: 'Effet mesuré (%)',
+      draw(c, X, Y) { line(c, X, Y, d.xs, d.fits[g], g >= 7 ? C.red : C.blue, 3); dots(c, X, Y, d.x, d.y, C.ink); } });
+    const msg = g <= 1 ? 'trop simple : sous-apprentissage' : g >= 7 ? '<span class="warn">trop souple : le modèle suit le bruit</span>' : 'compromis raisonnable';
+    f.read.innerHTML = `Erreur d’entraînement : <b>${fr(d.tr[g], 1)}</b> · erreur de test (300 nouvelles mesures) : <b>${fr(d.te[g], 1)}</b> · ${msg}.`;
+  }
+  sd.addEventListener('input', draw); w._draw = draw; draw();
+};
+
+WIDGETS.neuron = function (w) {
+  const f = frame(w, 'Sortie d’un neurone ReLU'), wt = [0.8, 1.2, -0.5], b = 0.1; f.cv.style.height = '220px';
+  const s = [1, -0.5, 2].map((v, i) => slider(f.ctl, 'x' + '₁₂₃'[i], -2, 2, 0.1, v, x => fr(x, 1)));
+  function draw() {
+    const x = s.map(i => +i.value), z = x.reduce((p, v, i) => p + v * wt[i], b), a = Math.max(0, z), xs = [-4, 0, 4];
+    plot(f.cv, { xr: [-4, 4], yr: [-0.5, 4], xt: [-4, -2, 0, 2, 4], yt: [0, 2, 4], xl: 'Somme pondérée z', yl: 'Sortie a = ReLU(z)',
+      draw(c, X, Y) { line(c, X, Y, xs, xs.map(v => Math.max(0, v)), C.blue, 3); dots(c, X, Y, [z], [a], C.red, 7); } });
+    f.read.innerHTML = `z = 0,8 × ${fr(x[0], 1)} + 1,2 × ${fr(x[1], 1)} − 0,5 × ${fr(x[2], 1)} + 0,1 = <b>${fr(z, 2)}</b> · sortie a = <b>${fr(a, 2)}</b>${z <= 0 ? ' · neurone éteint' : ''}.`;
+  }
+  s.forEach(i => i.addEventListener('input', draw)); w._draw = draw; draw();
+};
+
+WIDGETS.lr = function (w) {
+  const f = frame(w, 'Loss curve of gradient descent for an adjustable learning rate');
+  const se = slider(f.ctl, 'Learning rate η', 0.002, 0.12, 0.001, 0.09, v => v.toFixed(3));
+  const id = 'ctl' + (++UID), cb = el(`<label for="${id}"><input type="checkbox" id="${id}"> momentum 0.9</label>`); f.ctl.append(cb);
+  function run(eta, mu) { const lam = [1, 20]; let x = [-9, 1.6], v = [0, 0]; const L = [0.5 * (81 + 20 * 2.56)]; for (let k = 0; k < 60; k++) { for (let j = 0; j < 2; j++) { v[j] = mu * v[j] + lam[j] * x[j]; x[j] -= eta * v[j]; } L.push(0.5 * (x[0] * x[0] + 20 * x[1] * x[1])); } return L; }
+  function draw() {
+    const eta = +se.value, mu = cb.querySelector('input').checked ? 0.9 : 0, L = run(eta, mu), lg = L.map(v => Math.max(-6, Math.min(8, Math.log10(Math.max(v, 1e-12)))));
+    plot(f.cv, { xr: [0, 60], yr: [-6, 8], xt: [0, 20, 40, 60], yt: [-6, -3, 0, 3, 6], yf: v => '10^' + v, xl: 'Training step', yl: 'Loss (log scale)', draw(c, X, Y) { line(c, X, Y, L.map((_, i) => i), lg, L[60] > L[0] ? C.red : C.blue, 3); } });
+    const st = L[60] > L[0] ? '<span class="warn">diverges</span>' : L[60] > 1 ? 'slow' : 'converges';
+    f.read.innerHTML = `Loss after 60 steps: <b>${L[60].toExponential(1)}</b> · ${st}. Curvatures 1 and 20: plain gradient descent is stable only below η = 2 / 20 = 0.1.`;
+  }
+  se.addEventListener('input', draw); cb.querySelector('input').addEventListener('change', draw); w._draw = draw; draw();
+};
+
+WIDGETS.attention = function (w) {
+  const d = DATA.b2, toks = el('<div class="toks" role="group" aria-label="Token being updated"></div>'); w.append(toks);
+  const f = frame(w, 'Attention weights of the selected token'); let q = 5;
+  const bs = d.tok.map((t, i) => { const b = el(`<button type="button">${t}</button>`); b.onclick = () => { q = i; draw(); }; toks.appendChild(b); return b; });
+  const st = slider(f.ctl, 'Divide the scores by', 0.3, 3, 0.1, 1, v => v.toFixed(1));
+  function draw() {
+    bs.forEach((b, i) => b.classList.toggle('on', i === q));
+    const T = +st.value, p = softmax(d.sc[q].slice(0, q + 1).map(v => v / T)), vals = d.tok.map((_, j) => j <= q ? p[j] : null);
+    barchart(f.cv, d.tok, vals, d.tok.map((_, j) => j === q ? C.grey : C.blue), 'Attention weight');
+    const best = p.indexOf(Math.max(...p));
+    f.read.innerHTML = `“${d.tok[q]}” puts most weight on <b>“${d.tok[best]}”</b> (${p[best].toFixed(2)}). Later events are masked. Illustrative scores, not a trained model.`;
+  }
+  st.addEventListener('input', draw); w._draw = draw; draw();
+};
+
+WIDGETS.temperature = function (w) {
+  const s = DATA.b3.sims, f = frame(w, 'Softmax over one positive and five negatives for an adjustable temperature');
+  const st = slider(f.ctl, 'Temperature τ', 0.02, 1, 0.01, 0.2, v => v.toFixed(2)), labels = ['0.9 positive', '0.7 hard', '0.3', '0.0', '−0.2', '−0.5'];
+  function draw() {
+    const p = softmax(s.map(v => v / +st.value));
+    barchart(f.cv, labels, p, labels.map((_, k) => k ? C.grey : C.blue), 'Probability');
+    f.read.innerHTML = `Probability of the positive: <b>${p[0].toFixed(3)}</b> · loss −log p = <b>${(-Math.log(p[0])).toFixed(3)}</b> · share of the negatives' mass on the hardest one: <b>${(100 * p[1] / (1 - p[0] + 1e-12)).toFixed(0)} %</b>.`;
+  }
+  st.addEventListener('input', draw); w._draw = draw; draw();
+};
+
+WIDGETS.diffusion = function (w) {
+  const d = DATA.b4, f = frame(w, 'A ring of points progressively replaced by Gaussian noise');
+  const sa = slider(f.ctl, 'Signal kept ᾱ (drag left to add noise)', 0, 1, 0.01, 1, v => v.toFixed(2));
+  function draw() {
+    const ab = +sa.value, cv = f.cv, dpr = window.devicePixelRatio || 1, W = cv.clientWidth || 600, H = cv.clientHeight || 300;
+    cv.width = W * dpr; cv.height = H * dpr; const c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, W, H);
+    const k = Math.min(W, H) / 6.4; c.fillStyle = '#F2F4F8'; c.fillRect(W / 2 - 3.1 * k, H / 2 - 3.1 * k, 6.2 * k, 6.2 * k);
+    d.ring.forEach((p, i) => { const x = Math.sqrt(ab) * p[0] + Math.sqrt(1 - ab) * d.eps[i][0], y = Math.sqrt(ab) * p[1] + Math.sqrt(1 - ab) * d.eps[i][1]; c.fillStyle = ab > 0.02 ? C.blue : C.grey; c.beginPath(); c.arc(W / 2 + Math.max(-3, Math.min(3, x)) * k, H / 2 - Math.max(-3, Math.min(3, y)) * k, 4, 0, 7); c.fill(); });
+    f.read.innerHTML = `x_t = √ᾱ · x₀ + √(1 − ᾱ) · ε, with ᾱ = <b>${ab.toFixed(2)}</b> · signal-to-noise ratio: <b>${ab >= 1 ? '∞' : (ab / (1 - ab)).toFixed(2)}</b>. The reverse process is what the network learns.`;
+  }
+  sa.addEventListener('input', draw); w._draw = draw; draw();
+};
+
+WIDGETS.lora = function (w) {
+  const ctl = el('<div class="ctl"></div>'), read = el('<p class="read" aria-live="polite"></p>'); w.append(ctl, read);
+  const mk = (label, v) => { const id = 'ctl' + (++UID), l = el(`<label for="${id}">${label}<input type="number" id="${id}" min="1" max="100000" step="1" value="${v}"></label>`); ctl.append(l); return l.querySelector('input'); };
+  const d = mk('d', 4096), k = mk('k', 4096), r = mk('rank r', 8);
+  function draw() {
+    const D = Math.max(1, +d.value || 1), K = Math.max(1, +k.value || 1), R = Math.max(1, Math.min(+r.value || 1, Math.min(D, K))), full = D * K, lo = R * (D + K);
+    read.innerHTML = `Full matrix: <b>${full.toLocaleString('en-US')}</b> weights · LoRA update: <b>${lo.toLocaleString('en-US')}</b> weights · <b>${(100 * lo / full).toFixed(2)} %</b> of the matrix.`;
+  }
+  [d, k, r].forEach(i => i.addEventListener('input', draw)); draw();
+};
+
+WIDGETS.pk = function (w) {
+  const f = frame(w, 'Simulated concentration over three days for adjustable dose, clearance and volume');
+  const sd = slider(f.ctl, 'Dose (mg)', 1, 6, 0.5, 3, v => v.toFixed(1)), sc = slider(f.ctl, 'Clearance CL (L/h)', 5, 40, 0.5, 17.5, v => v.toFixed(1)), sv = slider(f.ctl, 'Volume V (L)', 100, 500, 10, 250);
+  const id = 'ctl' + (++UID), sel = el(`<label for="${id}">Interval<select id="${id}"><option value="12">12 h</option><option value="24">24 h</option></select></label>`); f.ctl.append(sel);
+  function draw() {
+    const D = +sd.value, CL = +sc.value, V = +sv.value, tau = +sel.querySelector('select').value, ke = CL / V, ka = 1.5, ts = [], cs = [];
+    const conc = t => { let s = 0; for (let k = 0; k * tau <= t; k++) { const u = t - k * tau; s += D * 1000 / V * ka / (ka - ke) * (Math.exp(-ke * u) - Math.exp(-ka * u)); } return s; };
+    for (let t = 0; t <= 72; t += 0.2) { ts.push(t); cs.push(conc(t)); }
+    const tr = []; for (let t = tau; t <= 72; t += tau) tr.push(t);
+    plot(f.cv, { xr: [0, 72], yr: [0, 40], xt: [0, 12, 24, 36, 48, 60, 72], yt: [0, 10, 20, 30, 40], xl: 'Time (hours)', yl: 'Concentration (ng/mL)',
+      draw(c, X, Y) { c.fillStyle = C.pale; c.fillRect(X(0), Y(10), X(72) - X(0), Y(5) - Y(10)); line(c, X, Y, ts, cs, C.blue, 3); dots(c, X, Y, tr, tr.map(t => conc(t - 0.01)), C.red, 5); } });
+    f.read.innerHTML = `Last trough: <b>${conc(72 - 0.01).toFixed(1)} ng/mL</b> · peak: <b>${Math.max(...cs).toFixed(1)} ng/mL</b> · half-life: <b>${(Math.log(2) / ke).toFixed(1)} h</b>. Illustrative parameters and target band (5 to 10 ng/mL); not dosing advice.`;
+  }
+  [sd, sc, sv].forEach(i => i.addEventListener('input', draw)); sel.querySelector('select').addEventListener('change', draw); w._draw = draw; draw();
+};
+
+(function () {
+  const home = document.getElementById('home'), sess = document.getElementById('session'), cache = {};
+  const links = [...document.querySelectorAll('nav a[data-n]')], mob = document.getElementById('mobnav');
+  mob.innerHTML = '<option value="home">Sommaire</option>' + links.map(a => `<option value="session-${a.dataset.n}">${a.dataset.n}. ${a.textContent.replace(/^\d+/, '')}</option>`).join('');
+  mob.addEventListener('change', () => { location.hash = mob.value; });
+  function scaleFigs(root) {
+    root.querySelectorAll('.figwrap').forEach(w => {
+      const fw = +w.dataset.w, fh = +w.dataset.h, avail = w.parentElement.clientWidth - 2;
+      const k = Math.min(fw > 1000 ? 0.54 : 0.66, avail / fw);
+      w.style.width = fw * k + 'px'; w.style.height = fh * k + 'px'; w.firstElementChild.style.transform = 'scale(' + k + ')';
+    });
+  }
+  function wire(root, n) {
+    root.querySelectorAll('.qcard').forEach(c => c.querySelectorAll('.qopt').forEach(b => b.addEventListener('click', () => {
+      const ok = +c.dataset.ok;
+      c.querySelectorAll('.qopt').forEach(o => { o.classList.remove('good', 'bad'); if (+o.dataset.i === ok) o.classList.add('good'); });
+      if (+b.dataset.i !== ok) b.classList.add('bad');
+      c.querySelector('.qwhy').hidden = false;
+    })));
+    root.querySelectorAll('.widget').forEach(w => { try { WIDGETS[w.dataset.w](w, n <= 4 ? 'fr' : 'en'); } catch (e) { w.insertAdjacentHTML('beforeend', '<p class="read warn">Interactive figure unavailable.</p>'); } });
+    root.querySelectorAll('details.sol').forEach(d => d.addEventListener('toggle', () => scaleFigs(d)));
+    scaleFigs(root);
+  }
+  async function show() {
+    const m = /^#session-(\d+)$/.exec(location.hash), n = m ? +m[1] : 0;
+    links.forEach(a => a.classList.toggle('on', +a.dataset.n === n)); mob.value = n ? 'session-' + n : 'home';
+    if (!n || n < 1 || n > 10) { sess.hidden = true; home.hidden = false; window.scrollTo(0, 0); return; }
+    home.hidden = true; sess.hidden = false; document.documentElement.lang = n <= 4 ? 'fr' : 'en';
+    try {
+      if (!cache[n]) { const r = await fetch('sessions/s' + String(n).padStart(2, '0') + '.json'); if (!r.ok) throw new Error(r.status); cache[n] = (await r.json()).html; }
+      sess.innerHTML = cache[n]; wire(sess, n);
+    } catch (e) {
+      sess.innerHTML = '<section class="blk"><h3>Cette séance n’a pas pu être chargée.</h3><p>Rechargez la page, ou revenez au <a href="#home">sommaire</a>. Les diapositives restent accessibles depuis la conversation.</p></section>';
+    }
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', show);
+  let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => { scaleFigs(document); document.querySelectorAll('.widget').forEach(w => w._draw && w._draw()); }, 120); });
+  show();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+/* IA responsable et santé numérique : feuille commune aux sept séances.
+   Papier blanc, encre bleu nuit, bleu stylo pour ce qu'on montre, rouge pour l'erreur.
+   Ce qui est écrit à la main (police Caveat) est ce qu'on ajoute pendant le cours. */
+body { font-family: 'Source Sans 3', Arial, sans-serif; color: #101B3F; }
+section { counter-increment: page; background: #FFFFFF; color: #101B3F; padding: 84px 128px 116px; display: flex; flex-direction: column; font-family: 'Source Sans 3', Arial, sans-serif; font-size: 36px; line-height: 1.35; }
+h1, h2, h3 { font-family: 'Source Sans 3', Arial, sans-serif; }
+h2 { font-size: 64px; font-weight: 900; line-height: 1.1; letter-spacing: -1px; color: #101B3F; }
+h3 { font-size: 40px; font-weight: 700; line-height: 1.2; color: #101B3F; }
+.hd { display: flex; flex-direction: column; gap: 12px; }
+.lead { font-size: 34px; line-height: 1.3; color: #5A6379; }
+.tag { font-size: 28px; line-height: 1.2; font-weight: 700; color: #2A46C8; }
+.tag-c { font-family: 'Caveat', cursive; font-size: 50px; line-height: 1; font-weight: 700; color: #D22B3A; }
+.bd { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 36px; padding-top: 28px; }
+.foot { position: absolute; left: 128px; bottom: 46px; width: 1400px; font-size: 26px; line-height: 1.2; color: #7F88A0; }
+.pg { position: absolute; right: 128px; bottom: 46px; width: 120px; height: 30px; text-align: right; font-size: 26px; line-height: 1.2; color: #7F88A0; }
+.pg::before { content: counter(page); }
+.sp { flex: 1; }
+.k { font-size: 28px; line-height: 1.2; font-weight: 700; color: #5A6379; }
+.hand { font-family: 'Caveat', cursive; font-weight: 700; font-size: 48px; line-height: 1.05; color: #2A46C8; }
+.hand-r { color: #D22B3A; }
+.ul { width: 240px; height: 10px; border-radius: 5px; background: #D22B3A; transform-origin: left center; }
+@keyframes draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes rise { from { opacity: 0; } to { opacity: 1; } }
+
+/* Étapes au clic */
+.fragment { opacity: 0; transition: opacity 450ms ease; }
+.fragment.visible { opacity: 1; }
+.ring.fragment { opacity: 1; border-color: #FFFFFF; background-color: #FFFFFF; transition: border-color 400ms ease, background-color 400ms ease; }
+.ring.fragment.visible { border-color: #2A46C8; background-color: #E9EDFB; }
+.wipe.fragment { opacity: 1; transform: scaleX(1); transform-origin: right center; transition: transform 1200ms ease-in-out; }
+.wipe.fragment.visible { opacity: 1; transform: scaleX(0); }
+.late.fragment { transition: opacity 450ms ease 900ms; }
+.ul.fragment { opacity: 1; transform: scaleX(0); transition: transform 600ms ease-out; }
+.ul.fragment.visible { transform: scaleX(1); }
+
+/* Diapositives bleues : ouverture, exercices, fin */
+.blue { background: #2A46C8; color: #FFFFFF; }
+.blue h1, .blue h2, .blue h3 { color: #FFFFFF; }
+.blue .foot, .blue .pg { color: #C3CCF3; }
+.cv-k { font-size: 30px; line-height: 1.2; font-weight: 700; color: #C3CCF3; }
+.cv-t { font-size: 104px; font-weight: 900; line-height: 1.05; letter-spacing: -2px; width: 1040px; margin-top: 28px; }
+.cv-s { font-size: 38px; line-height: 1.4; width: 980px; margin-top: 36px; color: #E3E8FB; }
+.cv-b { display: flex; align-items: flex-end; gap: 48px; }
+.cv-a { font-size: 30px; font-weight: 700; line-height: 1.2; }
+.cv-n { font-size: 28px; line-height: 1.2; color: #C3CCF3; }
+.cv-p { display: flex; gap: 10px; align-items: center; height: 34px; }
+.cv-i { width: 56px; height: 8px; border-radius: 4px; background: #6F83DC; }
+.cv-on { background: #FFFFFF; }
+.cv-g { position: absolute; right: 128px; top: 196px; }
+.cv-ev { position: absolute; right: 128px; top: 196px; animation: rise 900ms ease 500ms both; }
+
+/* Situation de départ */
+.cols { display: flex; gap: 72px; align-items: center; }
+.sit-l { width: 820px; display: flex; flex-direction: column; gap: 26px; }
+.sit-p { font-size: 40px; line-height: 1.4; }
+.sit-q { flex: 1; display: flex; flex-direction: column; gap: 22px; }
+.qz { font-size: 60px; font-weight: 900; line-height: 1.15; letter-spacing: -1px; color: #2A46C8; }
+
+/* Listes à filets */
+.rows { display: flex; flex-direction: column; }
+.row { display: flex; gap: 32px; align-items: center; padding: 30px 0; border-top: 2px solid #D9DDE6; }
+.row-0 { border-top: none; }
+.ob-b { width: 36px; height: 36px; border: 4px solid #101B3F; }
+.ob-t { flex: 1; font-size: 46px; line-height: 1.3; }
+.pl-n { width: 64px; font-size: 56px; font-weight: 900; line-height: 1; color: #2A46C8; }
+.pl-m { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.pl-d { font-size: 34px; line-height: 1.3; color: #5A6379; }
+.pt { flex: 1; font-size: 42px; line-height: 1.35; }
+.ptl { display: flex; flex-direction: column; width: 1420px; }
+.col-r .ptl { width: auto; }
+.col-r .pt { font-size: 36px; }
+.col-r .row { padding: 20px 0; }
+.rc-t { flex: 1; font-size: 44px; line-height: 1.3; font-weight: 700; }
+.nx { display: flex; flex-direction: column; gap: 8px; padding-top: 26px; border-top: 4px solid #101B3F; }
+.nx-t { font-size: 36px; line-height: 1.35; }
+.band { font-size: 38px; line-height: 1.3; font-weight: 700; color: #101B3F; padding-top: 22px; border-top: 4px solid #101B3F; }
+
+/* Phrase isolée */
+.st { justify-content: center; gap: 36px; }
+.st-t { font-size: 76px; font-weight: 900; line-height: 1.15; letter-spacing: -1px; width: 1480px; }
+.st-s { font-size: 40px; line-height: 1.4; color: #5A6379; width: 1280px; }
+.st .ul { width: 300px; height: 12px; animation: draw 700ms ease-out 400ms both; }
+
+/* Colonnes séparées par un filet */
+.cl { display: flex; }
+.cc { flex: 1; display: flex; flex-direction: column; gap: 16px; padding: 6px 44px; border-left: 2px solid #D9DDE6; }
+.cc-0 { padding-left: 0; border-left: none; }
+.ct { font-size: 34px; line-height: 1.4; }
+.c4 .cc { padding: 6px 30px; }
+.c4 .cc-0 { padding-left: 0; }
+.c4 h3 { font-size: 38px; }
+.c4 .ct { font-size: 32px; }
+.c2 .ct { font-size: 40px; }
+.c2 h3 { font-size: 50px; }
+
+/* Grands nombres */
+.nm { display: flex; gap: 72px; }
+.nc { flex: 1; display: flex; flex-direction: column; gap: 14px; }
+.bn { font-size: 150px; font-weight: 900; line-height: 1; letter-spacing: -4px; color: #2A46C8; }
+.bn-w { color: #D22B3A; }
+.bl { font-size: 36px; line-height: 1.3; }
+
+/* Tableaux */
+.t { display: flex; flex-direction: column; font-size: 36px; line-height: 1.3; }
+.t-s { font-size: 33px; }
+.t-r { display: flex; padding: 22px 16px; border-top: 2px solid #D9DDE6; }
+.t-s .t-r { padding: 16px 16px; }
+.t-h { border-top: none; border-bottom: 4px solid #101B3F; padding: 0 16px 12px; font-size: 28px; font-weight: 700; color: #5A6379; }
+.t-h + .t-r { border-top: none; }
+.t-c { padding-right: 28px; }
+.t-1 { font-weight: 700; }
+.hl { background: #E9EDFB; }
+
+/* Matrice de confusion */
+.mx { display: flex; flex-direction: column; gap: 12px; width: 1010px; flex: none; }
+.mx-r { display: flex; gap: 12px; align-items: center; }
+.mx-rh { width: 200px; font-size: 30px; font-weight: 700; line-height: 1.2; }
+.mx-ch { width: 300px; font-size: 28px; font-weight: 700; line-height: 1.2; color: #5A6379; }
+.mx-c { width: 300px; height: 168px; padding: 20px 26px; display: flex; flex-direction: column; gap: 4px; background: #E9EDFB; }
+.mx-e { background: #FBE6E8; }
+.mx-n { font-size: 84px; font-weight: 900; line-height: 1; letter-spacing: -2px; }
+.mx-l { font-size: 28px; line-height: 1.2; }
+.mx-t { width: 150px; padding-left: 26px; font-size: 44px; font-weight: 700; line-height: 1; color: #5A6379; }
+.mx-side { flex: 1; display: flex; flex-direction: column; gap: 28px; }
+
+/* Ce qu'on entend, ce qu'on répond */
+.cp { display: flex; flex-direction: column; }
+.cp-r { display: flex; gap: 56px; align-items: center; padding: 28px 0; border-top: 2px solid #D9DDE6; }
+.cp-a { width: 720px; font-size: 38px; line-height: 1.35; color: #5A6379; }
+.cp-b { flex: 1; font-size: 38px; line-height: 1.35; font-weight: 700; }
+
+/* Étapes reliées */
+.fl { display: flex; }
+.fs { flex: 1; display: flex; flex-direction: column; gap: 14px; padding-right: 28px; }
+.fs-top { display: flex; align-items: center; gap: 14px; height: 72px; }
+.fs-n { width: 72px; height: 72px; border-radius: 50%; background: #2A46C8; color: #FFFFFF; font-size: 36px; font-weight: 900; line-height: 72px; text-align: center; }
+.fs-l { flex: 1; height: 4px; background: #2A46C8; }
+.fs-t { font-size: 34px; line-height: 1.38; }
+.tk { display: flex; gap: 10px; align-items: center; }
+.tk-c { font-size: 34px; line-height: 1; padding: 14px 18px; border: 3px solid #101B3F; }
+.tk-q { border-color: #D22B3A; color: #D22B3A; font-weight: 700; }
+.tk-n { border-color: #D22B3A; background: #FBE6E8; }
+
+/* Barres */
+.bars { display: flex; flex-direction: column; gap: 30px; }
+.br { display: flex; align-items: center; gap: 24px; }
+.br-l { width: 500px; text-align: right; font-size: 34px; line-height: 1.2; }
+.br-k { width: 900px; height: 34px; }
+.br-f { height: 34px; border-radius: 0 4px 4px 0; background: #2A46C8; transform-origin: left center; animation: draw 900ms cubic-bezier(.2, .7, .2, 1) both; }
+.br-w { background: #D22B3A; }
+.br:nth-child(2) .br-f { animation-delay: 120ms; }
+.br:nth-child(3) .br-f { animation-delay: 240ms; }
+.br:nth-child(4) .br-f { animation-delay: 360ms; }
+.br:nth-child(5) .br-f { animation-delay: 480ms; }
+.br-v { font-size: 38px; font-weight: 700; line-height: 1; }
+
+/* Document cité */
+.doc { display: flex; flex-direction: column; gap: 18px; padding: 44px 56px; background: #F2F4F8; border: 2px solid #D9DDE6; }
+.doc-t { font-size: 38px; line-height: 1.5; }
+
+/* À vous */
+.ex-k { display: flex; align-items: center; gap: 20px; font-size: 36px; font-weight: 700; line-height: 1.2; color: #FFFFFF; }
+.pz { display: flex; gap: 10px; }
+.pz-b { width: 12px; height: 40px; background: #FFFFFF; }
+.ex-s { flex: 1; display: flex; flex-direction: column; gap: 26px; }
+.stp { display: flex; gap: 26px; align-items: flex-start; }
+.stp-n { width: 56px; height: 56px; border-radius: 50%; background: #FFFFFF; color: #2A46C8; font-size: 30px; font-weight: 900; line-height: 56px; text-align: center; }
+.stp-t { flex: 1; font-size: 38px; line-height: 1.35; padding-top: 2px; }
+.ex-m { width: 480px; display: flex; flex-direction: column; gap: 30px; padding-left: 48px; border-left: 2px solid #6F83DC; }
+.mt { display: flex; flex-direction: column; gap: 6px; }
+.blue .k { color: #C3CCF3; }
+.mt-v { font-size: 34px; line-height: 1.3; font-weight: 700; }
+.blue .cols { align-items: flex-start; }
+
+/* Questions à choix */
+.po { display: flex; flex-direction: column; gap: 14px; width: 1300px; }
+.po-r { display: flex; gap: 30px; align-items: center; padding: 20px 28px; border: 4px solid #FFFFFF; }
+.po-l { width: 48px; font-size: 50px; font-weight: 900; line-height: 1; color: #2A46C8; }
+.po-t { flex: 1; font-size: 46px; line-height: 1.25; }
+.qq { font-size: 36px; font-weight: 700; line-height: 1.3; }
+.qo { font-size: 34px; line-height: 1.3; padding: 10px 16px; border: 4px solid #FFFFFF; }
+.qs { display: flex; flex-direction: column; gap: 8px; }
+
+/* Fiche d'évaluation */
+.fi { display: flex; flex-direction: column; }
+.fi-r { display: flex; align-items: center; height: 90px; border-top: 2px solid #D9DDE6; }
+.fi-h { height: 48px; border-top: none; border-bottom: 4px solid #101B3F; font-size: 28px; font-weight: 700; color: #5A6379; align-items: flex-start; }
+.fi-h + .fi-r { border-top: none; }
+.fi-a { width: 400px; font-size: 32px; font-weight: 700; line-height: 1.2; }
+.fi-b { width: 520px; font-size: 30px; line-height: 1.2; padding-right: 24px; }
+.fi-c { flex: 1; font-family: 'Caveat', cursive; font-weight: 700; font-size: 44px; line-height: 1; color: #2A46C8; }
+.fi-e { flex: 1; height: 30px; border-bottom: 3px dotted #AEB5C6; }
+.fi-x { color: #9AA2B6; }
+.fi-x .fi-a { font-weight: 400; }
+
+/* Figures */
+.plot { position: relative; }
+.ly { position: absolute; left: 0; top: 0; }
+.cv { position: absolute; background: #FFFFFF; }
+.ax { position: absolute; font-size: 27px; line-height: 1.2; color: #5A6379; white-space: nowrap; }
+.ax-b { font-weight: 700; color: #101B3F; }
+.axw { position: absolute; font-size: 30px; line-height: 1.2; color: #101B3F; }
+.axh { position: absolute; font-family: 'Caveat', cursive; font-weight: 700; font-size: 46px; line-height: 1; color: #2A46C8; white-space: nowrap; }
+.col-r { flex: 1; display: flex; flex-direction: column; gap: 28px; justify-content: center; }
+.mx-w { width: 300px; }
+.n3 .bn { font-size: 132px; }
+.n4 .bn { font-size: 104px; }
+.fs h3 { font-size: 42px; }
+.plot { flex: none; }
+.t-s .t-h { padding: 0 16px 10px; }
+.n2 .bn { font-size: 190px; }

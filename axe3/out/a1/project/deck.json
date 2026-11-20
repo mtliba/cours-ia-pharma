@@ -1,0 +1,74 @@
+{
+ "v": 5,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-11-19T22:00:00Z"
+ },
+ "lists": "css",
+ "format": {
+  "v": 1,
+  "shared": [
+   "project/deck.css"
+  ]
+ },
+ "title": "Axe 3 · Séance 1 — Apprendre à partir de données",
+ "cover": "s01",
+ "order": [
+  "s01",
+  "s02",
+  "s03",
+  "s04",
+  "s05",
+  "s06",
+  "s07",
+  "s08",
+  "s09",
+  "s10",
+  "s11",
+  "s12",
+  "s13",
+  "s14",
+  "s15",
+  "s16",
+  "s17",
+  "s18",
+  "s19"
+ ],
+ "sections": {
+  "p0": {
+   "description": "Ouverture : la situation de départ, les objectifs et le plan.",
+   "start": "s01"
+  },
+  "p1": {
+   "description": "Le vocabulaire : trois ensembles emboîtés, et la différence entre une règle écrite et une règle apprise.",
+   "start": "s05"
+  },
+  "p2": {
+   "description": "Un premier modèle : une droite entre la dose et la concentration, et la mesure de son erreur.",
+   "start": "s07"
+  },
+  "p3": {
+   "description": "Comment le modèle se règle : descendre la pente de l’erreur, pas à pas.",
+   "start": "s10"
+  },
+  "p4": {
+   "description": "Les quatre familles d’apprentissage, un exercice de classement, et les limites.",
+   "start": "s12"
+  }
+ },
+ "faces": {
+  "source-sans-3": {
+   "family": "Source Sans 3",
+   "href": "https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&display=swap"
+  },
+  "caveat": {
+   "family": "Caveat",
+   "href": "https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap"
+  },
+  "jetbrains-mono": {
+   "family": "JetBrains Mono",
+   "href": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap"
+  }
+ },
+ "designSystems": []
+}

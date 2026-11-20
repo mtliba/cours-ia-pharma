@@ -1,0 +1,83 @@
+{
+ "v": 5,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-11-19T22:00:00Z"
+ },
+ "lists": "css",
+ "format": {
+  "v": 1,
+  "shared": [
+   "project/deck.css"
+  ]
+ },
+ "title": "Axe 3 · Session 9 — Foundation models and adaptation",
+ "cover": "s01",
+ "order": [
+  "s01",
+  "s02",
+  "s03",
+  "s04",
+  "s05",
+  "s06",
+  "s07",
+  "s08",
+  "s09",
+  "s10",
+  "s11",
+  "s12",
+  "s13",
+  "s14",
+  "s15",
+  "s16",
+  "s17",
+  "s18",
+  "s19",
+  "s20",
+  "s21",
+  "s22",
+  "s23",
+  "s24"
+ ],
+ "sections": {
+  "p0": {
+   "description": "Opening: 800 labelled patients and one week of compute.",
+   "start": "s01"
+  },
+  "p1": {
+   "description": "What a foundation model is, and where they exist in the life sciences.",
+   "start": "s05"
+  },
+  "p2": {
+   "description": "The adaptation ladder: from prompting to full fine-tuning.",
+   "start": "s08"
+  },
+  "p3": {
+   "description": "Connecting a model to knowledge: retrieval, tools and agents.",
+   "start": "s12"
+  },
+  "p4": {
+   "description": "What goes wrong, uncertainty with conformal prediction, and an honest evaluation.",
+   "start": "s14"
+  },
+  "p5": {
+   "description": "A short implementation, and a decision guide.",
+   "start": "s17"
+  }
+ },
+ "faces": {
+  "source-sans-3": {
+   "family": "Source Sans 3",
+   "href": "https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&display=swap"
+  },
+  "caveat": {
+   "family": "Caveat",
+   "href": "https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap"
+  },
+  "jetbrains-mono": {
+   "family": "JetBrains Mono",
+   "href": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap"
+  }
+ },
+ "designSystems": []
+}

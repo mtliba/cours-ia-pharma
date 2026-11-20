@@ -1,0 +1,84 @@
+{
+ "v": 5,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-11-19T22:00:00Z"
+ },
+ "lists": "css",
+ "format": {
+  "v": 1,
+  "shared": [
+   "project/deck.css"
+  ]
+ },
+ "title": "Axe 3 · Session 10 — Multimodal and longitudinal health data: from models to decisions",
+ "cover": "s01",
+ "order": [
+  "s01",
+  "s02",
+  "s03",
+  "s04",
+  "s05",
+  "s06",
+  "s07",
+  "s08",
+  "s09",
+  "s10",
+  "s11",
+  "s12",
+  "s13",
+  "s14",
+  "s15",
+  "s16",
+  "s17",
+  "s18",
+  "s19",
+  "s20",
+  "s21",
+  "s22",
+  "s23",
+  "s24",
+  "s25"
+ ],
+ "sections": {
+  "p0": {
+   "description": "Opening: three years of follow-up for one transplant recipient.",
+   "start": "s01"
+  },
+  "p1": {
+   "description": "Why clinical trajectories are hard.",
+   "start": "s05"
+  },
+  "p2": {
+   "description": "Putting time into the model: time-aware embeddings and continuous-time dynamics.",
+   "start": "s07"
+  },
+  "p3": {
+   "description": "Mechanism and learning: pharmacokinetic models as priors, simulators and layers.",
+   "start": "s09"
+  },
+  "p4": {
+   "description": "Several modalities, and time-to-event outcomes.",
+   "start": "s12"
+  },
+  "p5": {
+   "description": "From prediction to decision: causal questions, usefulness, and the human in the loop.",
+   "start": "s15"
+  }
+ },
+ "faces": {
+  "source-sans-3": {
+   "family": "Source Sans 3",
+   "href": "https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&display=swap"
+  },
+  "caveat": {
+   "family": "Caveat",
+   "href": "https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap"
+  },
+  "jetbrains-mono": {
+   "family": "JetBrains Mono",
+   "href": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap"
+  }
+ },
+ "designSystems": []
+}

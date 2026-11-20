@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Programmation et analyse de données</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400..800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Plan : un cahier de laboratoire numérique. Encre bleu nuit sur papier froid, sarcelle pour ce qui se manipule, ambre pour la cible thérapeutique.
+   Mise en page : colonne de gauche alignée, la figure vivante porte la page ; les diapositives gardent leur format 16:9 en mode Présenter et se déroulent en mode Lire. */
+:root {
+  --ink: #10283B; --soft: #3D4F5C; --mute: #5A6770; --paper: #F2F5F5; --card: #FFFFFF; --line: #D3DCDE;
+  --teal: #0B6E6E; --teal-l: #DDEBE9; --c1: #0A9087; --c2: #D9741A; --amber-l: #FBE9D7; --red: #9B2C1F;
+  --display: 'Bricolage Grotesque', 'Trebuchet MS', Arial, sans-serif;
+  --body: 'IBM Plex Sans', 'Segoe UI', Arial, sans-serif;
+  --mono: 'IBM Plex Mono', 'Consolas', 'Courier New', monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; margin: 0; }
+html, body { height: 100%; }
+body { background: var(--paper); color: var(--ink); font: 17px/1.5 var(--body); display: flex; flex-direction: column; }
+a { color: var(--teal); }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--c2); outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+#bar { display: flex; align-items: center; gap: 16px; padding: 10px 20px; background: var(--ink); color: #fff; flex-wrap: wrap; }
+#bar a { color: #fff; text-decoration: none; font: 600 16px var(--display); }
+#where { color: #BFD0D8; font-size: 15px; flex: 1; min-width: 0; }
+.seg { display: inline-flex; background: #1D3B52; border-radius: 999px; padding: 3px; }
+.seg button { border: 0; background: none; color: #BFD0D8; padding: 5px 14px; border-radius: 999px; font-size: 14px; font-weight: 600; }
+.seg button[aria-pressed="true"] { background: #fff; color: var(--ink); }
+
+/* accueil */
+#home { width: 100%; max-width: 1180px; margin: 0 auto; padding: 40px 20px 56px; display: flex; flex-direction: column; gap: 48px; }
+.hero { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 40px; align-items: center; }
+.hero h1 { font: 700 clamp(34px, 4.6vw, 60px)/1.04 var(--display); letter-spacing: -0.02em; text-wrap: balance; }
+.hero p { color: var(--soft); max-width: 34em; margin-top: 18px; }
+.cta { display: inline-block; margin-top: 24px; background: var(--teal); color: #fff; text-decoration: none; font-weight: 600; padding: 12px 22px; border-radius: 10px; }
+.hero figure { background: var(--card); border-radius: 18px; padding: 16px 16px 12px; border: 1px solid var(--line); position: relative; }
+.hero figcaption { font-size: 14px; color: var(--mute); padding: 4px 8px 0; }
+#home h2 { font: 700 26px/1.2 var(--display); }
+.list { display: flex; flex-direction: column; border-top: 2px solid var(--ink); margin-top: 16px; }
+.row { display: grid; grid-template-columns: 76px minmax(0, 1fr) auto; gap: 8px 24px; align-items: baseline; padding: 20px 4px; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); }
+.row:hover { background: var(--card); }
+.row .n { font: 700 46px/1 var(--display); color: var(--teal); }
+.row h3 { font: 700 22px/1.25 var(--display); }
+.row p { color: var(--soft); font-size: 16px; max-width: 60ch; }
+.row .go { font-weight: 600; color: var(--teal); white-space: nowrap; }
+.how { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 16px; }
+.how div { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; }
+.how b { display: block; font: 700 18px var(--display); margin-bottom: 4px; }
+.fine { color: var(--mute); font-size: 14px; max-width: 80ch; }
+
+/* lecteur */
+#player { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+#parts { display: flex; gap: 8px; padding: 10px 20px; overflow-x: auto; background: var(--card); border-bottom: 1px solid var(--line); }
+#parts button { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 5px 14px; font-size: 14px; white-space: nowrap; }
+#parts button.on { background: var(--teal); border-color: var(--teal); color: #fff; }
+#scroll { flex: 1; min-height: 0; overflow: auto; }
+#ctl { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 10px 16px; background: var(--card); border-top: 1px solid var(--line); }
+#ctl button { border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 8px 16px; font-weight: 600; }
+#ctl button:disabled { opacity: .4; cursor: default; }
+#count { min-width: 84px; text-align: center; font-variant-numeric: tabular-nums; color: var(--soft); }
+#notes { background: var(--amber-l); padding: 12px 20px; font-size: 15px; border-top: 1px solid var(--line); }
+#notes b { font-family: var(--display); }
+</style>
+<link rel="stylesheet" href="slides.css">
+<style>
+#deck h1, #deck h2, #deck h3, #deck .cv-t, #deck .sec-t, #deck .st-t, #deck .qz, #deck .pl-n { font-family: var(--display); letter-spacing: -0.01em; }
+#deck .eyebrow, #deck .eyebrow-d { text-transform: lowercase; letter-spacing: 0; font-family: var(--body); }
+#deck .eyebrow::first-letter, #deck .eyebrow-d::first-letter { text-transform: uppercase; }
+#deck section { position: relative; box-sizing: border-box; }
+#deck aside { display: none; }
+#deck .pg::before { content: attr(data-n); }
+#deck .code, #deck .out { white-space: nowrap; }
+#deck .codebox { position: relative; }
+#deck .dgs { height: auto; display: block; overflow: visible; }
+#deck .dgs text { font-family: var(--body); }
+#deck .dgs text.m { font-family: var(--mono); white-space: pre; }
+#deck .fig { height: auto; }
+
+/* mode Présenter : une diapositive 16:9 à la fois */
+#deck.present { min-height: 100%; display: grid; place-items: center; padding: 12px; }
+#deck.present section { display: none; width: calc(1920 * var(--su)); height: calc(1080 * var(--su)); overflow: hidden; border-radius: calc(20 * var(--su)); box-shadow: 0 10px 40px rgba(16, 40, 59, .18); }
+#deck.present section.on { display: flex; animation: enter .28s ease-out; }
+#deck.present section.on .dgs > * { animation: pop .45s ease-out both; animation-delay: calc(var(--i, 0) * 40ms + 150ms); }
+#deck.present .outbox:not(.shown) { visibility: hidden; }
+#deck .run { position: absolute; right: calc(16 * var(--u)); bottom: calc(14 * var(--u)); border: 0; border-radius: 999px; background: var(--c2); color: #fff; font: 600 calc(22 * var(--u)) var(--body); padding: calc(8 * var(--u)) calc(22 * var(--u)); }
+#deck.read .run, #deck .run.done { display: none; }
+@keyframes enter { from { opacity: 0; transform: translateY(10px); } }
+@keyframes pop { from { opacity: 0; transform: translateY(6px); } }
+
+/* mode Lire : toutes les diapositives à la suite, mise en page fluide */
+#deck.read { --u: .5px; max-width: 900px; margin: 0 auto; padding: 20px 16px 48px; display: flex; flex-direction: column; gap: 18px; }
+#deck.read section { border-radius: 16px; padding: 28px 24px; border: 1px solid var(--line); scroll-margin-top: 12px; }
+#deck.read section.dark, #deck.read section.stmt { border: 0; padding: 40px 24px; }
+#deck.read .foot, #deck.read .pg, #deck.read .sp { display: none; }
+#deck.read .cols { flex-direction: column; gap: 20px; }
+#deck.read .col-text, #deck.read .col-fc, #deck.read .col-meta, #deck.read .col-r, #deck.read .col-ex { width: auto; }
+#deck.read .cards { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+#deck.read .cv-t, #deck.read .sec-t, #deck.read .cv-s, #deck.read .st-t, #deck.read .st-s, #deck.read .qz { width: auto; }
+#deck.read .cv-t, #deck.read .sec-t { font-size: 40px; }
+#deck.read .trail { flex-wrap: wrap; gap: 8px; }
+#deck.read .tr-i { flex: 1 1 150px; }
+#deck.read .codebox, #deck.read .outbox { overflow-x: auto; }
+#deck.read .code, #deck.read .out { font-size: 13px; }
+#deck.read .eyebrow, #deck.read .eyebrow-d, #deck.read .lbl, #deck.read .num, #deck.read .pill, #deck.read .tr-n { font-size: 13px; }
+#deck.read .tb { font-size: 15px; }
+#deck.read .pl-r { flex-wrap: wrap; gap: 6px 16px; }
+#deck.read .dgs, #deck.read .fig, #deck.read .wg { width: 100% !important; max-width: 760px; }
+#deck.read .col-text .dgs, #deck.read .col-text .wg { max-width: 430px; }
+
+/* éléments interactifs */
+#deck .cards[data-answer] .card { cursor: pointer; border: calc(4 * var(--u)) solid transparent; }
+#deck .cards[data-answer] .card:hover { border-color: var(--line); }
+#deck .card.ok { border-color: var(--teal) !important; background: var(--teal-l); }
+#deck .card.ko { border-color: var(--red) !important; }
+#deck .verdict { font-weight: 700; font-size: calc(26 * var(--u)); }
+#deck .card.ok .verdict { color: var(--teal); } #deck .card.ko .verdict { color: var(--red); }
+#deck .qz-x { font-size: calc(30 * var(--u)); line-height: 1.35; color: var(--soft); background: var(--teal-l); border-radius: calc(16 * var(--u)); padding: calc(20 * var(--u)) calc(30 * var(--u)); }
+#deck.read .verdict, #deck.read .qz-x { font-size: 15px; }
+.wg { position: relative; font: calc(24 * var(--u))/1.35 var(--body); color: var(--ink); display: flex; flex-direction: column; gap: .5em; }
+#deck.read .wg { font-size: 14px; }
+.wg-c { display: flex; flex-wrap: wrap; gap: .4em 1.4em; align-items: center; background: var(--paper); border-radius: .6em; padding: .5em .9em; }
+.wg label { display: inline-flex; align-items: center; gap: .5em; font-weight: 600; }
+.wg output, .wg .val { font-family: var(--mono); font-weight: 600; min-width: 2.6em; color: var(--teal); }
+.wg input[type=range] { width: 9em; accent-color: var(--teal); }
+.wg input[type=checkbox] { width: 1.1em; height: 1.1em; accent-color: var(--teal); }
+.wg svg { width: 100%; height: auto; display: block; }
+.wg svg text { font-family: var(--body); fill: var(--soft); }
+.wg .say { font-weight: 600; }
+.wg .key { display: inline-flex; align-items: center; gap: .4em; font-weight: 400; }
+.wg .key i { width: .8em; height: .8em; border-radius: 50%; display: inline-block; }
+.wg .seg2 { display: inline-flex; gap: .3em; }
+.wg .seg2 button { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: .15em .8em; font-size: 1em; }
+.wg .seg2 button[aria-pressed="true"] { background: var(--teal); border-color: var(--teal); color: #fff; }
+.tip { position: absolute; pointer-events: none; background: var(--ink); color: #fff; padding: .3em .7em; border-radius: .4em; font-size: .85em; white-space: nowrap; z-index: 2; }
+.cg { display: grid; grid-template-columns: 1.25fr 1.15fr .8fr; gap: 1.2em; align-items: stretch; }
+.cg > div { border-radius: .8em; padding: 1em 1.2em; display: flex; flex-direction: column; gap: .7em; justify-content: center; background: var(--paper); }
+.cg .cg-f { background: var(--ink); color: #E9EEF1; text-align: center; }
+.cg .cg-f .m { font: 600 1.1em var(--mono); } .cg .cg-f .x { font: 1em var(--mono); color: #BFD0D8; }
+.cg .cg-o { background: var(--teal-l); text-align: center; }
+.cg .big { font: 700 2.4em/1 var(--display); color: var(--teal); }
+.cg label { justify-content: space-between; }
+#deck.read .cg { grid-template-columns: 1fr; }
+.bars { display: grid; grid-template-columns: 1fr; gap: .3em; }
+.bars .b { height: 1.9em; border-radius: .3em; min-width: 3px; }
+.mini { font: .85em var(--mono); border-collapse: collapse; }
+.mini td, .mini th { padding: .15em .8em; text-align: right; border-bottom: 1px solid var(--line); }
+.codeline { font: .85em var(--mono); background: var(--ink); color: #E9EEF1; border-radius: .5em; padding: .5em .8em; overflow-x: auto; white-space: nowrap; }
+@media (max-width: 760px) { #where { order: 3; flex-basis: 100%; } .hero { grid-template-columns: 1fr; } .row { grid-template-columns: 48px minmax(0, 1fr); } .row .go { grid-column: 2; } .row .n { font-size: 34px; } }
+@media (prefers-reduced-motion: reduce) { #deck * { animation: none !important; } .draw { animation: none !important; } }
+.draw { stroke-dasharray: 1; stroke-dashoffset: 0; animation: draw 1.4s ease-out both; }
+@keyframes draw { from { stroke-dashoffset: 1; } }
+</style>
+</head>
+<body>
+<header id="bar">
+  <a href="#accueil">Programmation et analyse de données</a>
+  <span id="where"></span>
+  <div class="seg" id="modes" hidden role="group" aria-label="Mode d’affichage">
+    <button id="m-read" aria-pressed="false">Lire</button>
+    <button id="m-present" aria-pressed="false">Présenter</button>
+  </div>
+</header>
+
+<main id="home">
+  <div class="hero">
+    <div>
+      <h1>Du fichier brut à une analyse que l’on peut refaire</h1>
+      <p>Quatre séances de programmation et d’analyse de données pour les sciences pharmaceutiques. Un seul jeu de données du début à la fin : le suivi du tacrolimus chez 40 patients greffés du rein. Les données sont simulées.</p>
+      <a class="cta" href="#seance-1">Commencer la séance 1</a>
+    </div>
+    <figure>
+      <div class="wg" id="hero-chart" style="--u: 1px; font-size: 14px"><div class="wg-p"></div><div class="tip" hidden></div></div>
+      <figcaption>Chaque ligne est un patient, de J7 à J180 après la greffe. La bande marque la cible de 5 à 10 ng/mL. Survolez une ligne pour la suivre.</figcaption>
+    </figure>
+  </div>
+  <div>
+    <h2>Les quatre séances</h2>
+    <div class="list" id="list"></div>
+  </div>
+  <div>
+    <h2>Deux façons de suivre le cours</h2>
+    <div class="how">
+      <div><b>Lire</b>Toutes les diapositives à la suite, sur ordinateur ou téléphone. Les figures se manipulent et les questions se corrigent au clic.</div>
+      <div><b>Présenter</b>Une diapositive à la fois, en 16:9. Flèches du clavier pour avancer, bouton Exécuter pour afficher le résultat d’un code, touche N pour les notes de l’enseignant.</div>
+    </div>
+  </div>
+  <p class="fine">Cours conçu par Marouane Tliba. Les patients, les doses et les concentrations sont fictifs. La cible de 5 à 10 ng/mL sert d’exemple : les cibles réelles dépendent du protocole et du délai depuis la greffe.</p>
+</main>
+
+<div id="player" hidden>
+  <nav id="parts" aria-label="Parties de la séance"></nav>
+  <div id="scroll"><div id="deck" class="read"></div></div>
+  <aside id="notes" hidden></aside>
+  <div id="ctl" hidden>
+    <button id="prev">Précédente</button><span id="count"></span><button id="next">Suivante</button>
+    <button id="bnotes" aria-pressed="false">Notes</button>
+  </div>
+</div>
+<script src="site.js"></script>
+</body>
+</html>

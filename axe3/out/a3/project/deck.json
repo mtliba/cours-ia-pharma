@@ -1,0 +1,70 @@
+{
+ "v": 5,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-11-19T22:00:00Z"
+ },
+ "lists": "css",
+ "format": {
+  "v": 1,
+  "shared": [
+   "project/deck.css"
+  ]
+ },
+ "title": "Axe 3 · Séance 3 — Généraliser : surapprentissage et évaluation",
+ "cover": "s01",
+ "order": [
+  "s01",
+  "s02",
+  "s03",
+  "s04",
+  "s05",
+  "s06",
+  "s07",
+  "s08",
+  "s09",
+  "s10",
+  "s11",
+  "s12",
+  "s13",
+  "s14",
+  "s15",
+  "s16",
+  "s17",
+  "s18",
+  "s19"
+ ],
+ "sections": {
+  "p0": {
+   "description": "Ouverture : deux modèles, dont l’un ne fait aucune erreur.",
+   "start": "s01"
+  },
+  "p1": {
+   "description": "Apprendre ou mémoriser : sous-apprentissage et surapprentissage sur dix mesures.",
+   "start": "s05"
+  },
+  "p2": {
+   "description": "Découper les données : entraînement, validation, test, et le piège de la fuite.",
+   "start": "s08"
+  },
+  "p3": {
+   "description": "Mesurer, comparer, corriger.",
+   "start": "s11"
+  }
+ },
+ "faces": {
+  "source-sans-3": {
+   "family": "Source Sans 3",
+   "href": "https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&display=swap"
+  },
+  "caveat": {
+   "family": "Caveat",
+   "href": "https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap"
+  },
+  "jetbrains-mono": {
+   "family": "JetBrains Mono",
+   "href": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap"
+  }
+ },
+ "designSystems": []
+}

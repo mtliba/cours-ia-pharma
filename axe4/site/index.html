@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IA responsable et santé numérique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Source+Sans+3:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Papier blanc et encre bleu nuit, comme les vidéos. Le bleu montre et se manipule ; le rouge signale l'événement ou l'erreur.
+     L'écriture manuscrite est réservée à ce que l'on ajoute pendant le cours : corrections, fiche d'évaluation.
+     Mise en page : une colonne de lecture d'environ 70 caractères, des figures plus larges, une barre des séances en haut. */
+  --paper:#FFFFFF; --ink:#101B3F; --muted:#5A6379; --quiet:#7F88A0; --line:#D9DDE6; --soft:#E6E9F0;
+  --blue:#2A46C8; --blue-pale:#E9EDFB; --tint:#F3F5FD;
+  --red:#D22B3A; --red-pale:#FBE6E8; --red-mid:#EE9CA4;
+  --sans:'Source Sans 3','Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --hand:'Caveat','Segoe Print','Bradley Hand',cursive;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 18px/1.55 var(--sans)}
+a{color:var(--blue);text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:4px}
+h1,h2,h3{text-wrap:balance}
+h1{font-weight:900;font-size:clamp(36px,5.2vw,58px);line-height:1.04;letter-spacing:-.02em;margin:6px 0 16px}
+h1:focus{outline:none}
+h2{font-weight:900;font-size:30px;line-height:1.15;letter-spacing:-.01em;margin:68px 0 14px}
+h3{font-weight:700;font-size:22px;line-height:1.25;margin:36px 0 10px}
+p{margin:0 0 14px}
+ul,ol{margin:0 0 14px}
+b{font-weight:700}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.k{font-size:15px;font-weight:700;color:var(--muted);margin:0 0 4px}
+.mut{color:var(--muted)}
+.lead{font-size:21px;line-height:1.45;color:var(--muted);max-width:760px}
+.cap{font-size:15px;color:var(--muted);margin:8px 0 14px}
+.real{font-size:15px;font-weight:700;color:var(--blue);margin:34px 0 0}
+.real + h3{margin-top:4px}
+
+/* Barre des séances */
+.bar{position:sticky;top:0;z-index:10;background:var(--paper);border-bottom:1px solid var(--line)}
+.bar-in{max-width:1120px;margin:0 auto;padding:6px 24px;display:flex;align-items:center;gap:8px 20px;flex-wrap:wrap}
+.brand{font-weight:700;color:var(--ink);text-decoration:none;font-size:17px;margin-right:auto;padding:8px 0}
+.nav{display:flex;gap:2px;overflow-x:auto;max-width:100%}
+.nav a{display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:44px;padding:0 10px;color:var(--muted);text-decoration:none;font-weight:700;border-bottom:3px solid transparent;white-space:nowrap}
+.nav a:hover{color:var(--ink)}
+.nav a[aria-current="page"]{color:var(--blue);border-bottom-color:var(--blue)}
+
+main{max-width:1120px;margin:0 auto;padding:36px 24px 96px}
+.page > section, .page > p, .page > .situ{max-width:900px}
+.page > section > p, .page > section > ul, .page > section > ol, .page > section > h3{max-width:720px}
+
+/* Accueil */
+.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:56px;align-items:center;padding:8px 0 40px;border-bottom:2px solid var(--ink);max-width:none !important}
+.hero .by{font-weight:700;margin:4px 0 22px}
+.herofig{margin:0}
+.herofig svg{width:100%;max-width:360px;margin-left:auto}
+.herofig .cap{max-width:360px;margin-left:auto}
+.hd{fill:var(--soft)}
+.hd.ev{animation:ev .6s ease var(--d) forwards}
+@keyframes ev{to{fill:var(--red)}}
+.srows{border-top:2px solid var(--ink)}
+.srow{display:grid;grid-template-columns:52px minmax(0,1.1fr) minmax(0,1fr) 150px;gap:18px;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink)}
+.srow:hover .st{color:var(--blue)}
+.sn{font-size:32px;font-weight:900;color:var(--blue);line-height:1}
+.st{font-size:21px;font-weight:700;line-height:1.25}
+.sq{color:var(--muted);font-size:17px}
+.sd{font-family:var(--hand);font-weight:700;font-size:26px;line-height:1;color:var(--blue);text-align:right}
+
+/* Situation de départ */
+.situ{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:44px;margin:30px 0 8px;padding:26px 0 22px;border-top:2px solid var(--ink);border-bottom:1px solid var(--line)}
+.situ p{font-size:19px}
+.qz-big{font-size:28px;line-height:1.2;font-weight:900;color:var(--blue);text-wrap:balance}
+.qz-big::after{content:"";display:block;width:110px;height:6px;border-radius:3px;background:var(--red);margin-top:16px}
+
+.stmt{font-size:28px;line-height:1.25;font-weight:900;max-width:820px;margin:34px 0 18px;text-wrap:balance}
+.stmt::after{content:"";display:block;width:120px;height:6px;border-radius:3px;background:var(--red);margin-top:14px}
+
+/* Listes */
+.dots-list{padding-left:20px}
+.dots-list li{margin:6px 0}
+.dots-list li::marker{color:var(--blue)}
+.num-list{padding-left:24px}
+.num-list li{margin:8px 0}
+.num-list li::marker{color:var(--blue);font-weight:900}
+
+/* Tableaux */
+.scroll{overflow-x:auto;margin:14px 0 16px}
+.tb{width:100%;border-collapse:collapse;font-size:17px;line-height:1.4;font-variant-numeric:tabular-nums}
+.tb th,.tb td{text-align:left;vertical-align:top;padding:11px 18px 11px 0;border-top:1px solid var(--line)}
+.tb thead th{font-size:14px;font-weight:700;color:var(--muted);border-top:0;border-bottom:2px solid var(--ink);padding-bottom:8px}
+.tb tbody th{font-weight:700}
+.tb tr.hl th,.tb tr.hl td{background:var(--blue-pale)}
+.tb tr.hl th{padding-left:10px}
+
+/* Colonnes, étapes, grands nombres */
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px 34px;margin:14px 0 18px}
+.cols > div{border-top:2px solid var(--ink);padding-top:10px}
+.cols h3{margin:0 0 6px;font-size:20px}
+.cols p{font-size:17px;margin:0}
+.flow{list-style:none;padding:0;margin:18px 0 20px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;counter-reset:f;max-width:none !important}
+.flow li{counter-increment:f;display:flex;flex-direction:column;gap:4px;position:relative;padding-top:52px}
+.flow li::before{content:counter(f);position:absolute;top:0;left:0;width:40px;height:40px;border-radius:50%;background:var(--blue);color:#fff;font-weight:900;display:grid;place-items:center}
+.flow li::after{content:"";position:absolute;top:19px;left:50px;right:-8px;height:2px;background:var(--blue)}
+.flow li:last-child::after{display:none}
+.flow b{font-size:19px}
+.flow span{font-size:16px;line-height:1.45}
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:22px 34px;margin:16px 0 6px}
+.bn{font-size:54px;font-weight:900;line-height:1;letter-spacing:-.02em;color:var(--blue);margin:0 0 6px;font-variant-numeric:tabular-nums}
+.bn.w{color:var(--red)}
+.bl{font-size:16px;margin:0}
+.hbars{display:grid;gap:12px;margin:16px 0 8px;max-width:760px}
+.hb{display:grid;grid-template-columns:210px minmax(0,1fr) 56px;gap:14px;align-items:center}
+.hb-l{text-align:right;font-size:16px}
+.hb-t{height:24px;background:var(--soft);border-radius:0 4px 4px 0}
+.hb-f{display:block;height:100%;background:var(--blue);border-radius:0 4px 4px 0}
+.hb-f.w{background:var(--red)}
+.hb-v{font-weight:900;font-variant-numeric:tabular-nums}
+
+/* Figures et commandes */
+.fig{margin:22px 0 24px;padding-top:18px;border-top:1px solid var(--line);max-width:960px}
+.fig-t{font-weight:700;font-size:19px;margin:0 0 6px;line-height:1.3}
+.fig.sub{border-top:0;padding-top:4px;margin-top:26px}
+svg{display:block;max-width:100%;height:auto;overflow:visible}
+svg text{font-family:var(--sans)}
+.tk{font-size:14px;fill:var(--muted)}
+.ax{font-size:14px;font-weight:700;fill:var(--ink)}
+.lb{font-size:16px;font-weight:700;fill:var(--ink)}
+.gl{stroke:var(--line);stroke-width:1}
+.ref{stroke:var(--quiet);stroke-width:1.5;stroke-dasharray:5 5}
+.dg{stroke:var(--quiet);stroke-width:2;stroke-dasharray:8 7}
+.ctl{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:flex-end;margin:10px 0 16px}
+.grp{display:inline-flex;flex-wrap:wrap;border:1.5px solid var(--line);border-radius:8px;overflow:hidden;background:var(--paper)}
+.seg{font:inherit;font-size:16px;font-weight:600;background:var(--paper);color:var(--ink);border:0;border-left:1.5px solid var(--line);padding:8px 14px;min-height:42px;cursor:pointer}
+.seg:first-child{border-left:0}
+.seg:hover{background:var(--blue-pale)}
+.seg[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.seg.sm{font-size:15px;padding:6px 12px;min-height:38px}
+.btn{font:inherit;font-size:16px;font-weight:700;background:var(--blue);color:#fff;border:0;border-radius:8px;padding:10px 18px;min-height:44px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+.btn.ghost{background:var(--paper);color:var(--blue);box-shadow:inset 0 0 0 1.5px var(--blue)}
+.btn:disabled{opacity:.4;cursor:default}
+.chip{font:inherit;font-size:15px;font-weight:600;border:1.5px solid var(--line);background:var(--paper);border-radius:999px;padding:6px 14px;min-height:38px;cursor:pointer;color:var(--ink)}
+.chip[aria-pressed="true"]{border-color:var(--blue);color:var(--blue);background:var(--blue-pale)}
+.presets{display:flex;gap:8px;flex-wrap:wrap}
+input[type=range]{width:min(380px,100%);accent-color:var(--blue);margin:8px 0 0}
+.lbl{font-size:16px;font-weight:700;margin:0;display:block}
+output{font-variant-numeric:tabular-nums;color:var(--blue)}
+.say{font-size:17px;font-weight:600;margin:10px 0 0;max-width:760px}
+.sw{display:inline-block;width:13px;height:13px;border-radius:50%;vertical-align:-1px;margin:0 6px 0 12px}
+.sw:first-child{margin-left:0}
+.sw-r{background:var(--red)}
+.sw-ring{box-shadow:inset 0 0 0 3px var(--ink)}
+.sw-b{background:var(--blue)}
+.sw-o{box-shadow:inset 0 0 0 3px var(--ink);background:var(--paper)}
+
+/* Simulateur */
+.sim{display:grid;grid-template-columns:300px minmax(0,1fr);gap:36px;align-items:start}
+.dt{transition:fill .45s ease,stroke .45s ease}
+.mx{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr) auto;gap:6px;font-variant-numeric:tabular-nums}
+.mx .h{font-size:14px;font-weight:700;color:var(--muted);align-self:end;padding-bottom:2px}
+.mx .rh{font-weight:700;font-size:15px;align-self:center;padding-right:6px}
+.mx .c{background:var(--blue-pale);padding:10px 14px;border-radius:6px}
+.mx .c.e{background:var(--red-pale)}
+.mx .n{font-size:32px;font-weight:900;line-height:1.05;display:block}
+.mx .l{font-size:14px}
+.mx .t{font-size:19px;font-weight:700;color:var(--muted);align-self:center;padding:0 8px}
+.meas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 22px;margin:18px 0 0}
+.meas div{border-top:2px solid var(--ink);padding-top:6px}
+.meas dt{font-size:14px;font-weight:700;color:var(--muted)}
+.meas dd{margin:0;font-size:28px;font-weight:900;line-height:1.1;font-variant-numeric:tabular-nums}
+.meas .vpp dd{color:var(--blue)}
+.meas .mute dd{color:var(--quiet)}
+.cv-l{fill:none;stroke:var(--blue);stroke-width:3}
+.cv-p{fill:var(--blue);stroke:var(--paper);stroke-width:3}
+.cv-t{font-size:16px;font-weight:900;fill:var(--blue);paint-order:stroke;stroke:var(--paper);stroke-width:6px;stroke-linejoin:round}
+
+/* Exercices */
+.exo{background:var(--tint);border-radius:12px;padding:24px 28px;margin:30px 0;max-width:900px}
+.exo h3{margin:2px 0 12px}
+.exo-k{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--blue);margin:0}
+.pz{display:inline-flex;gap:4px}
+.pz i{width:5px;height:16px;background:var(--blue);display:block}
+.steps{margin:0 0 12px;padding-left:24px}
+.steps li{margin:5px 0}
+.exo-m{font-size:15px;color:var(--muted)}
+.rv{font:inherit;font-weight:700;font-size:16px;color:var(--blue);background:none;border:0;padding:8px 0;cursor:pointer;display:inline-flex;gap:10px;align-items:center;min-height:40px}
+.rv::before{content:"";width:8px;height:8px;border-right:2.5px solid currentColor;border-bottom:2.5px solid currentColor;transform:rotate(-45deg);transition:transform .2s}
+.rv[aria-expanded="true"]::before{transform:rotate(45deg)}
+.corr{margin-top:6px;padding-top:14px;border-top:1px solid var(--line)}
+.corr.open{animation:fade .35s ease}
+.hand{font-family:var(--hand);font-weight:700;font-size:36px;line-height:1;color:var(--red);margin:0 0 8px}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.doc{background:#F5F6F9;border:1px solid var(--line);border-radius:8px;padding:18px 22px;margin:14px 0 18px;max-width:760px}
+.doc p:last-child{margin:0}
+.exo .doc{background:var(--paper)}
+textarea{font:inherit;font-size:17px;width:100%;min-height:120px;padding:12px 14px;border:1.5px solid var(--line);border-radius:8px;margin:6px 0 10px;background:var(--paper);color:var(--ink)}
+.chk{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px 16px;margin:12px 0}
+.fld{display:flex;flex-direction:column;gap:4px;font-size:15px;font-weight:700}
+.inp{font:inherit;font-size:18px;width:100%;max-width:170px;padding:8px 10px;border:1.5px solid var(--line);border-radius:8px;font-variant-numeric:tabular-nums;background:var(--paper);color:var(--ink)}
+.inp.ok{border-color:var(--blue);background:var(--blue-pale)}
+.inp.ko{border-color:var(--red);background:var(--red-pale)}
+
+/* Listes à choisir */
+.sort{list-style:none;padding:0;margin:8px 0 6px}
+.sort li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.sort .fb{grid-column:1/-1;font-size:15px;font-weight:600;margin:0}
+.sort .fb:empty{display:none}
+.sort li.ok .fb{color:var(--blue)}
+.sort li.ko .fb{color:var(--red)}
+.sort li.ok .seg[aria-pressed="true"]{background:var(--blue)}
+.sort li.ko .seg[aria-pressed="true"]{background:var(--red)}
+
+/* Questions */
+.poll{margin:22px 0 26px;padding:18px 0 4px;border-top:2px solid var(--ink);max-width:760px}
+.qz ol{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:28px;max-width:760px}
+.qq{font-weight:700;font-size:19px;margin:0 0 10px}
+.qo{display:grid;gap:8px}
+.opt{font:inherit;font-size:17px;text-align:left;display:flex;gap:12px;align-items:baseline;background:var(--paper);color:var(--ink);border:1.5px solid var(--line);border-radius:8px;padding:10px 14px;cursor:pointer;width:100%}
+.opt:hover:not(:disabled){border-color:var(--blue)}
+.opt .ol{font-weight:900;color:var(--blue);min-width:16px}
+.opt .tag{margin-left:auto;font-size:14px;font-weight:700;white-space:nowrap}
+.opt:disabled{cursor:default;color:var(--ink)}
+.opt.ok{border-color:var(--blue);background:var(--blue-pale)}
+.opt.ok .tag{color:var(--blue)}
+.opt.ko{border-color:var(--red);background:var(--red-pale)}
+.opt.ko .tag{color:var(--red)}
+.why{font-size:16px;margin:10px 0 0;animation:fade .3s ease}
+
+/* Phrases entendues */
+.cmp{list-style:none;padding:0;margin:10px 0 0;max-width:900px !important}
+.cmp li{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;padding:14px 0;border-top:1px solid var(--line);align-items:start}
+.cmp q{quotes:none;color:var(--muted);font-size:17px}
+.cmp .rv{padding-top:0;min-height:0}
+.cmp .corr{border:0;padding:4px 0 0;margin:0}
+.cmp .ans{font-weight:700;margin:0}
+
+/* À retenir, fiche, sources, pagination */
+.ret ul{list-style:none;padding:0;margin:0;border-top:2px solid var(--ink);max-width:760px}
+.ret li{font-size:20px;font-weight:700;padding:13px 0;border-bottom:1px solid var(--line)}
+.next{margin-top:16px;font-size:17px}
+.fi{border-top:2px solid var(--ink);margin:12px 0 16px;max-width:980px}
+.fi-r{display:grid;grid-template-columns:210px minmax(0,1fr) minmax(0,1.25fr);gap:18px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);min-height:58px}
+.fi-r.cur{background:var(--blue-pale);padding-left:10px;padding-right:10px}
+.fi-h{min-height:0;font-size:14px;font-weight:700;color:var(--muted);border-bottom:2px solid var(--ink);padding:8px 0}
+.fi-a{font-weight:700}
+.fi-b{font-size:16px;color:var(--muted)}
+.fi-c{font-family:var(--hand);font-weight:700;font-size:28px;line-height:1.05;color:var(--blue)}
+.fi-c.write{animation:write 1.1s ease-out both}
+@keyframes write{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.fi-e{height:24px;border-bottom:2px dotted #AEB5C6}
+.src ul{padding-left:20px;font-size:15px;color:var(--muted);max-width:820px}
+.src li{margin:6px 0}
+.pager{display:flex;justify-content:space-between;gap:16px;margin-top:60px;padding-top:18px;border-top:2px solid var(--ink);flex-wrap:wrap}
+.pager a{font-weight:700;text-decoration:none;max-width:48%}
+.pager .nx{margin-left:auto;text-align:right}
+
+/* Figures particulières */
+.lk{fill:var(--blue);stroke:var(--blue);stroke-width:3;transition:fill .5s ease,stroke .5s ease}
+.lk.test{fill:var(--paper);stroke:var(--ink)}
+.rg{fill:var(--blue)}
+.rg.miss{fill:var(--paper);stroke:var(--red);stroke-width:3}
+.ready .rg{transition-property:transform;transition-duration:.8s;transition-timing-function:cubic-bezier(.3,.7,.2,1)}
+.lab-all,.lab-age{transition:opacity .4s ease}
+.lab-age{opacity:0}
+.m-age .lab-age{opacity:1}
+.m-age .lab-all{opacity:0}
+.wh-b,.wh-r{stroke-width:4;stroke-linecap:round}
+.wh-b{stroke:var(--blue)}
+.wh-r{stroke:var(--red)}
+.pt-b{fill:var(--blue);stroke:var(--paper);stroke-width:3}
+.pt-r{fill:var(--red);stroke:var(--paper);stroke-width:3}
+.cal{display:grid;grid-template-columns:minmax(0,410px) minmax(0,1fr);gap:34px;align-items:start}
+.cl{fill:none;stroke:var(--blue);stroke-width:2.5;transition:opacity .25s}
+.cl.mv{opacity:0}
+.cp{fill:var(--blue);stroke:var(--paper);stroke-width:3;cursor:pointer}
+.cp.sel{stroke:var(--ink);stroke-width:3.5}
+.ready .cp{transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.cpt{fill:var(--blue);stroke:var(--paper);stroke-width:3}
+.bins{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 6px}
+.minis{display:flex;gap:28px;margin-top:14px}
+.minis figure{margin:0}
+.mini{width:130px}
+.mini .mo{fill:var(--soft)}
+.mini .ma{fill:var(--quiet)}
+.mini .mob{fill:var(--blue)}
+.wh{transform:scaleX(0);transform-box:view-box;transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.on .wh{transform:scaleX(1)}
+.band{fill:var(--blue-pale)}
+.tok{font-size:20px;line-height:2.3;margin:4px 0 8px}
+.tk-c{display:inline-block;border:1.5px solid var(--ink);border-radius:4px;padding:0 8px;line-height:1.6;margin-right:3px}
+.slot{display:inline-block;min-width:140px;text-align:center;border-bottom:3px dashed var(--ink);font-weight:700;line-height:1.6;margin:0 6px 0 3px}
+.slot.ok{color:var(--blue);border-bottom:3px solid var(--blue)}
+.slot.ko{color:var(--red);border-bottom:3px solid var(--red)}
+.gbars{display:grid;gap:8px;margin:14px 0 4px;max-width:640px}
+.gb{display:grid;grid-template-columns:110px minmax(0,1fr) 46px;gap:12px;align-items:center}
+.gn{font-weight:600;text-align:right}
+.gt{height:20px;background:var(--soft);border-radius:0 4px 4px 0;overflow:hidden}
+.gf{display:block;height:100%;width:0;transition:width .45s ease}
+.gf.ok{background:var(--blue)}
+.gf.ko{background:var(--red)}
+.gv{font-weight:700;font-variant-numeric:tabular-nums}
+.reid{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:34px;align-items:center}
+.rd{fill:var(--quiet);transition:fill .5s ease}
+.s1 .rd,.s2 .rd{fill:var(--soft)}
+.s1 .rd.y{fill:var(--blue)}
+.s2 .rd.me{fill:var(--red)}
+.cnt{font-size:76px;font-weight:900;line-height:1;color:var(--blue);margin:0;font-variant-numeric:tabular-nums}
+.s2 .cnt{color:var(--red)}
+.cnt-l{font-size:18px;font-weight:700;margin:4px 0 14px}
+.pyr{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:34px;align-items:center}
+.pl{cursor:pointer}
+.pl polygon{stroke:var(--paper);stroke-width:3}
+.pl.on polygon{stroke:var(--ink);stroke-width:3.5}
+.pl text{font-size:17px;font-weight:700;pointer-events:none}
+.pyr-t{font-size:24px;font-weight:900;margin:0 0 6px}
+.ln{stroke:var(--ink);stroke-width:3}
+.ev-p{fill:var(--blue)}
+.ev-f{fill:var(--paper);stroke:var(--blue);stroke-width:4}
+.td{font-size:16px;font-weight:700;fill:var(--ink)}
+.tt{font-size:15px;fill:var(--ink)}
+.today{stroke:var(--red);stroke-width:2;stroke-dasharray:4 4}
+.rad{border:0;padding:0;margin:8px 0 14px;display:grid;gap:8px}
+.rad label{display:flex;gap:10px;align-items:center;font-size:17px;padding:8px 12px;border:1.5px solid var(--line);border-radius:8px;background:var(--paper);cursor:pointer;max-width:420px}
+.rad input{accent-color:var(--blue);width:18px;height:18px}
+
+/* Diapositives de la séance */
+.deckwrap{max-width:960px;margin:26px 0 10px}
+.player{outline:none}
+.player:focus-visible .stage{box-shadow:0 0 0 3px var(--blue)}
+.stage{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:var(--paper);border:1px solid var(--line);border-radius:10px;cursor:pointer}
+.host{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0}
+.dk-msg{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-weight:600;margin:0}
+.dk-prog{height:4px;background:var(--soft);border-radius:2px;overflow:hidden;margin-top:10px}
+.dk-prog span{display:block;height:100%;width:0;background:var(--blue);transition:width .3s ease}
+.dk-ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.dk-ctl .btn{padding:8px 14px;font-size:15px}
+.dk-pos{flex:1;min-width:140px;margin:0;font-size:15px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.dk-sel{font:inherit;font-size:15px;max-width:230px;padding:8px 10px;border:1.5px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);min-height:44px}
+.dk-notes{margin-top:12px;padding:14px 18px;background:#F5F6F9;border:1px solid var(--line);border-radius:8px}
+.dk-nt{margin:0;font-size:17px}
+.player:fullscreen,.player.fsx{background:var(--ink);padding:16px 24px;display:flex;flex-direction:column;justify-content:center}
+.player.fsx{position:fixed;inset:0;z-index:100}
+.player:fullscreen .stage,.player.fsx .stage{flex:1;aspect-ratio:auto;border:0;border-radius:0;background:transparent}
+.player:fullscreen .dk-pos,.player.fsx .dk-pos{color:#C3CCF3}
+.player:fullscreen .btn.ghost,.player.fsx .btn.ghost{background:transparent;color:#fff;box-shadow:inset 0 0 0 1.5px #C3CCF3}
+.player:fullscreen .dk-notes,.player.fsx .dk-notes{max-height:22vh;overflow:auto}
+
+@media (max-width:860px){
+  .sim,.cal,.reid,.pyr{grid-template-columns:1fr}
+  .flow{grid-template-columns:1fr 1fr}
+  .flow li::after{display:none}
+}
+@media (max-width:700px){
+  body{font-size:17px}
+  .bar{position:static}
+  main{padding:24px 16px 72px}
+  .bar-in{padding:4px 16px}
+  h2{font-size:26px;margin-top:52px}
+  .hero,.situ{grid-template-columns:1fr;gap:20px}
+  .herofig svg,.herofig .cap{margin-left:0}
+  .srow{grid-template-columns:40px minmax(0,1fr);gap:4px 12px}
+  .sq,.sd{grid-column:2;text-align:left}
+  .fi-r{grid-template-columns:1fr;gap:2px}
+  .fi-h{display:none}
+  .cmp li{grid-template-columns:1fr;gap:4px}
+  .flow{grid-template-columns:1fr}
+  .hb{grid-template-columns:120px minmax(0,1fr) 46px}
+  .meas{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sort li{grid-template-columns:1fr}
+  .exo{padding:20px 18px}
+  .pager a{max-width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-delay:0ms !important;transition-duration:.01ms !important;transition-delay:0ms !important}
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="bar-in">
+    <a class="brand" href="#accueil">IA responsable et santé numérique</a>
+    <nav class="nav" aria-label="Séances">
+      <a href="#seance-1" aria-label="Séance 1">1</a><a href="#seance-2" aria-label="Séance 2">2</a><a href="#seance-3" aria-label="Séance 3">3</a><a href="#seance-4" aria-label="Séance 4">4</a><a href="#seance-5" aria-label="Séance 5">5</a><a href="#seance-6" aria-label="Séance 6">6</a><a href="#seance-7" aria-label="Séance 7">7</a><a href="#fiche">Fiche</a>
+    </nav>
+  </div>
+</header>
+<main id="main"><noscript><p>Ce support a besoin de JavaScript pour afficher les séances.</p></noscript></main>
+<script>
+"use strict";
+const NB=" ";
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const RM=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+const fr=s=>String(s).replace(/'/g,"’").replace(/ ([:;?!»%])/g,NB+"$1").replace(/« /g,"«"+NB).replace(/(\d) (\d{3})(?!\d)/g,"$1"+NB+"$2");
+const nf=x=>Math.round(x).toLocaleString("fr-FR").replace(/\s/g,NB);
+const pc=(x,d=0)=>(100*x).toFixed(d).replace(".",",")+NB+"%";
+function typo(root){const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),L=[];while(w.nextNode())L.push(w.currentNode);L.forEach(n=>{const p=n.parentElement;if(!p||p.closest("script,style,textarea"))return;const t=fr(n.nodeValue);if(t!==n.nodeValue)n.nodeValue=t;});}
+
+const T=["Lire une étude d'IA en santé","Mesurer la performance","Biais et équité","Incertitude et calibration","IA générative et information sur le médicament","Données de santé et cadre réglementaire","Supervision humaine et responsabilité"];
+const GRID=[["Question et données","Que prédit-il, pour qui, avec quoi ?","AUC 0,78 sans fuite ; 0,71 dans un autre CHU"],["Performance","Quelles erreurs, au seuil choisi ?","Seuil 30 % : sensibilité 80 %, VPP 44 %"],["Équité","Fonctionne-t-il aussi bien pour tous ?","Sensibilité 60 % après 65 ans, 91 % avant"],["Calibration","Ses probabilités sont-elles justes ?","Annonce 27 % en moyenne, 20 % observés"],["Texte généré","Le texte produit est-il vérifié ?","Relecture par un pharmacien avant remise"],["Données et cadre","Données protégées, outil conforme ?","Dispositif médical : marquage CE à vérifier"],["Supervision","Qui décide, qui trace, qui répond ?","Le pharmacien vérifie, le médecin décide"]];
+
+/* Lignes de fiche déjà remplies : commodité propre à ce navigateur. */
+const done=new Set();
+try{JSON.parse(localStorage.getItem("iars-fiche")||"[]").forEach(n=>done.add(n));}catch(e){}
+const save=()=>{try{localStorage.setItem("iars-fiche",JSON.stringify([...done]));}catch(e){}};
+
+/* ---------- Gabarits ---------- */
+let RID=0;
+const tb=(head,rows,o={})=>`<div class="scroll"><table class="tb"><thead><tr>${head.map(h=>`<th scope="col">${h}</th>`).join("")}</tr></thead><tbody>${rows.map((r,i)=>`<tr${o.hl===i?' class="hl"':""}>${r.map((c,j)=>j?`<td>${c}</td>`:`<th scope="row">${c}</th>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+const nums=(items,src)=>`<div class="nums">${items.map(([b,l,w])=>`<div><p class="bn${w?" w":""}">${b}</p><p class="bl">${l}</p></div>`).join("")}</div>${src?`<p class="cap">${src}</p>`:""}`;
+const cols=items=>`<div class="cols">${items.map(([h,t])=>`<div><h3>${h}</h3><p>${t}</p></div>`).join("")}</div>`;
+const steps=items=>`<ol class="flow">${items.map(([h,t])=>`<li><b>${h}</b><span>${t}</span></li>`).join("")}</ol>`;
+const ul=items=>`<ul class="dots-list">${items.map(x=>`<li>${x}</li>`).join("")}</ul>`;
+const reveal=(label,html,cls="")=>{const id="r"+(++RID);return `<button type="button" class="rv" aria-expanded="false" aria-controls="${id}" data-l="${label}">${label}</button><div class="corr ${cls}" id="${id}" hidden>${html}</div>`;};
+const qitem=(q,opts,a,why)=>`<div class="qi" data-ans="${a}"><p class="qq">${q}</p><div class="qo">${opts.map((o,j)=>`<button type="button" class="opt" data-j="${j}"><span class="ol">${"ABC"[j]}</span><span>${o}</span><span class="tag"></span></button>`).join("")}</div><p class="why" hidden>${why}</p></div>`;
+const poll=(q,opts,a,why)=>`<div class="poll"><p class="k">Votre avis d'abord</p>${qitem(q,opts,a,why)}</div>`;
+const quiz=items=>`<section class="qz"><h2>Pour vérifier</h2><p>Répondez, puis lisez l'explication.</p><ol>${items.map((it,k)=>`<li>${qitem(`${k+1}. ${it[0]}`,it[1],it[2],it[3])}</li>`).join("")}</ol></section>`;
+const exo=o=>`<section class="exo"><p class="exo-k"><span class="pz" aria-hidden="true"><i></i><i></i></span>À vous</p><h3>${o.t}</h3><ol class="steps">${o.s.map(x=>`<li>${x}</li>`).join("")}</ol><p class="exo-m">Pause conseillée : ${o.d}. Matériel : ${o.m}. À produire : ${o.p}.</p>${o.w||""}${reveal("Voir la correction",`<p class="hand">Correction</p>${o.c}`)}</section>`;
+const cmp=pairs=>`<section><h2>Que répondre à ces phrases ?</h2><p>Lisez la phrase, préparez votre réponse, puis comparez.</p><ul class="cmp">${pairs.map(([a,b])=>`<li><q>${a}</q><div>${reveal("Que répondre ?",`<p class="ans">${b}</p>`)}</div></li>`).join("")}</ul></section>`;
+const ret=(pts,next,lab="Séance suivante",t="À retenir")=>`<section class="ret"><h2>${t}</h2><ul>${pts.map(p=>`<li>${p}</li>`).join("")}</ul><p class="next"><b>${lab} :</b> ${next}</p></section>`;
+const ficheBlk=n=>`<section><h2>Votre fiche d'évaluation</h2><p>Une ligne par séance. Quand vous avez terminé celle-ci, remplissez la ligne ${n}.</p><div class="fiche" data-cur="${n}"></div><button type="button" class="btn" data-fill="${n}">Remplir la ligne ${n}</button></section>`;
+const srcs=(list,note)=>`<section class="src"><h2>Sources</h2>${note?`<p class="mut">${note}</p>`:""}${list.length?`<ul>${list.map(s=>`<li>${s}</li>`).join("")}</ul>`:""}</section>`;
+const pager=n=>`<nav class="pager" aria-label="Séance précédente et suivante">${n>1?`<a href="#seance-${n-1}">Séance ${n-1} : ${T[n-2]}</a>`:`<a href="#accueil">Accueil du cours</a>`}${n<7?`<a class="nx" href="#seance-${n+1}">Séance ${n+1} : ${T[n]}</a>`:`<a class="nx" href="#fiche">La fiche complète</a>`}</nav>`;
+const head=(n,lead)=>`<p class="k">Séance ${n} sur 7</p><h1 tabindex="-1">${T[n-1]}</h1><p class="lead">${lead}</p><div class="w deckwrap" data-w="deck" data-n="${n}"></div>`;
+const situ=(ps,q)=>`<div class="situ"><div>${ps.map(p=>`<p>${p}</p>`).join("")}</div><div><p class="k">La question de la séance</p><p class="qz-big">${q}</p></div></div>`;
+const stmt=t=>`<p class="stmt">${t}</p>`;
+const real=`<p class="real">Étude publiée, chiffres réels</p>`;
+const fig=(title,inner,cap)=>`<figure class="fig"><figcaption class="fig-t">${title}</figcaption>${inner}${cap?`<p class="cap">${cap}</p>`:""}</figure>`;
+const w=name=>`<div class="w" data-w="${name}"></div>`;
+const hbars=items=>`<div class="hbars">${items.map(([l,v,r])=>`<div class="hb"><span class="hb-l">${l}</span><span class="hb-t"><span class="hb-f${r?" w":""}" style="width:${v*100}%"></span></span><span class="hb-v">${String(v).replace(".",",")}</span></div>`).join("")}</div>`;
+const L=(t,u)=>`<a href="${u}">${t}</a>`;
+const SRC={
+ wong:`Wong A. et al. External validation of a widely implemented proprietary sepsis prediction model in hospitalized patients. <i>JAMA Internal Medicine</i>, 2021. ${L("doi:10.1001/jamainternmed.2021.2626","https://doi.org/10.1001/jamainternmed.2021.2626")}`,
+ zech:`Zech J. R. et al. Variable generalization performance of a deep learning model to detect pneumonia in chest radiographs. <i>PLoS Medicine</i>, 2018. ${L("doi:10.1371/journal.pmed.1002683","https://doi.org/10.1371/journal.pmed.1002683")}`,
+ ober:`Obermeyer Z. et al. Dissecting racial bias in an algorithm used to manage the health of populations. <i>Science</i>, 2019. ${L("doi:10.1126/science.aax2342","https://doi.org/10.1126/science.aax2342")}`,
+ sjod:`Sjoding M. W. et al. Racial bias in pulse oximetry measurement. <i>New England Journal of Medicine</i>, 2020. ${L("doi:10.1056/NEJMc2029240","https://doi.org/10.1056/NEJMc2029240")}`,
+ bdpm:`Base de données publique des médicaments (RCP). ${L("base-donnees-publique.medicaments.gouv.fr","https://base-donnees-publique.medicaments.gouv.fr")}`,
+ thes:`ANSM. Thesaurus des interactions médicamenteuses, dans sa version en vigueur.`,
+ crat:`CRAT, Centre de référence sur les agents tératogènes. ${L("lecrat.fr","https://www.lecrat.fr")}`,
+ rgpd:`Règlement (UE) 2016/679, règlement général sur la protection des données. ${L("EUR-Lex","https://eur-lex.europa.eu/eli/reg/2016/679/oj")}`,
+ mdr:`Règlement (UE) 2017/745 relatif aux dispositifs médicaux. ${L("EUR-Lex","https://eur-lex.europa.eu/eli/reg/2017/745/oj")}`,
+ aia:`Règlement (UE) 2024/1689 sur l'intelligence artificielle, modifié par le règlement (UE) 2026/1744. ${L("EUR-Lex","https://eur-lex.europa.eu/eli/reg/2024/1689/oj")}`,
+ csp:`Code de la santé publique, articles L. 1110-4, L. 1111-8 et L. 4001-3.`,
+ godd:`Goddard K. et al. Automation bias: a systematic review of frequency, effect mediators, and mitigators. <i>Journal of the American Medical Informatics Association</i>, 2012. ${L("doi:10.1136/amiajnl-2011-000089","https://doi.org/10.1136/amiajnl-2011-000089")}`,
+ sijs:`van der Sijs H. et al. Overriding of drug safety alerts in computerized physician order entry. <i>Journal of the American Medical Informatics Association</i>, 2006. ${L("doi:10.1197/jamia.M1809","https://doi.org/10.1197/jamia.M1809")}`
+};
+
+/* ---------- Accueil ---------- */
+function home(){
+ const rows=T.map((t,i)=>`<a class="srow" href="#seance-${i+1}"><span class="sn">${i+1}</span><span class="st">${t}</span><span class="sq">${GRID[i][1]}</span><span class="sd">${done.has(i+1)?"ligne remplie":""}</span></a>`).join("");
+ return `<div class="page"><section class="hero"><div><h1 tabindex="-1">IA responsable et santé numérique</h1><p class="lead">Un cours en sept séances pour les étudiants en pharmacie : lire une étude, mesurer une performance, repérer un biais, vérifier une réponse d'IA générative, protéger les données, superviser un outil. Ce support accompagne les vidéos : les diapositives de chaque séance, à parcourir étape par étape, les exercices corrigés et des figures à manipuler.</p><p class="by">Marouane Tliba</p><div class="ctl"><a class="btn" href="#seance-1">Commencer par la séance 1</a><a class="btn ghost" href="#fiche">Voir la fiche d'évaluation</a></div></div><figure class="herofig">${w("hero")}<figcaption class="cap">Les 1 000 visites du CHU B, un point pour 10 visites. En rouge, les 200 suivies d'une surexposition au tacrolimus.</figcaption></figure></section>
+ <section><h2>Le fil rouge : TacroAlerte</h2><p>Un service de greffe rénale doit décider s'il installe TacroAlerte. À chaque visite, l'outil estime le risque que la concentration de tacrolimus soit trop élevée à la visite suivante.</p><p><b>TacroAlerte est fictif</b> : ses chiffres sont inventés pour le cours, et cohérents d'une séance à l'autre. Les études citées, elles, sont réelles. Chaque séance ajoute une ligne à la fiche d'évaluation de l'outil ; la décision se prend à la séance 7.</p></section>
+ <section style="max-width:none"><h2>Les sept séances</h2><div class="srows">${rows}</div></section>
+ <section><h2>Comment travailler</h2>${ul(["Regardez la vidéo, ou parcourez les diapositives en haut de chaque séance : un clic, une étape.","Faites chaque exercice avant d'ouvrir sa correction.","Répondez aux trois questions de fin de séance, puis remplissez la ligne de la fiche."])}</section></div>`;
+}
+
+/* ---------- Séance 1 ---------- */
+function s1(){return `<div class="page">${head(1,"Avant de demander si un outil fonctionne : que prédit-il, pour qui, et sur quelles données a-t-il été vérifié ?")}
+${situ(["Vous êtes interne à la pharmacie d'un CHU. Un éditeur présente <b>TacroAlerte</b>, un outil fictif : à chaque visite d'un patient greffé du rein, il estime le risque que sa concentration de tacrolimus soit trop élevée à la visite suivante.","La plaquette annonce : « AUC 0,86, validé sur 2 400 patients ».","Votre chef de service vous demande : « On l'installe ? »"],"Que devez-vous savoir avant de répondre ?")}
+<section><h2>Quatre questions à poser à toute étude</h2>
+<p>Un chiffre de performance n'a de sens que rapporté à une question précise. Avant « est-ce que ça marche ? », demandez : ça prédit quoi, pour qui, avec quoi, et quand ?</p>
+${tb(["Question","Ce qu'on cherche","Pour TacroAlerte, d'après la notice"],[["Qui ? La population","Les patients inclus et exclus, le lieu, la période","Adultes greffés du rein, CHU A, 2019 à 2023 : 2 400 patients. Exclus : moins de 3 dosages."],["Avec quoi ? Les prédicteurs","Les données fournies à l'outil, connues au moment où il répond","Les 3 derniers dosages, la dose, le poids, l'hématocrite, les médicaments associés."],["Quoi ? Le critère prédit","L'événement à prévoir, sa définition, qui l'a mesuré","Concentration résiduelle supérieure à 10 ng/mL à la visite suivante (cible illustrative)."],["Quand ? Le moment","L'instant de la prédiction et le délai jusqu'à l'événement","Le jour de la visite, pour la visite suivante, 2 à 6 semaines plus tard."]])}
+<p>Si l'étude ne répond pas à l'une de ces questions, on ne peut pas juger sa performance.</p>
+${exo({t:"Lire un résumé avec les quatre questions",s:["Lisez le résumé ci-dessous.","Pour chacune des quatre questions, notez ce que dit le résumé et ce qui manque.","Écrivez une question à poser aux auteurs."],d:"3 minutes",m:"papier et crayon",p:"la grille remplie et une question aux auteurs",
+ w:`<blockquote class="doc"><p class="k">Résumé fictif, rédigé pour l'exercice</p><p>« Nous avons développé un modèle d'apprentissage profond qui prédit le risque d'hospitalisation pour hémorragie chez les patients sous anticoagulant oral. Données de dispensation de 12 000 patients d'un réseau de pharmacies, de 2018 à 2022. AUC : 0,91. Le modèle surpasse les scores cliniques existants. »</p></blockquote>`,
+ c:tb(["Question","Écrit dans le résumé","Absent"],[["Population","12 000 patients d'un réseau de pharmacies, 2018 à 2022","Âge, indication, exclusions"],["Prédicteurs","« Données de dispensation »","La liste, et leur date"],["Critère prédit","Hospitalisation pour hémorragie","Qui l'a codée, et comment"],["Moment","Rien","Délai entre prédiction et événement"]])+`<p>Le chiffre de performance arrive en dernier : on lit d'abord la question et les données. Une question possible aux auteurs : « Quel délai sépare la prédiction de l'hospitalisation, et le modèle a-t-il été testé dans un autre réseau de pharmacies ? »</p>`})}
+</section>
+<section><h2>Trois niveaux de validation</h2>
+${poll("« AUC 0,86, validé sur 2 400 patients ». De quelle validation s'agit-il ?",["Interne","Temporelle","Externe"],0,"Rien n'indique d'autres patients que ceux du CHU A : c'est au mieux une validation interne.")}
+${tb(["Niveau","Données de test","Ce que cela prouve"],[["Interne","Mêmes patients, tirés au sort","Le modèle a appris quelque chose"],["Temporelle","Même centre, patients plus récents","Il tient quand les pratiques évoluent"],["Externe","Autre centre, autres équipes","Il fonctionne ailleurs que chez ses auteurs"]])}
+<p>« Validé » ne veut rien dire tant qu'on ne sait pas sur quelles données. Une baisse de performance en validation externe est la règle, pour quatre raisons :</p>
+${ul(["<b>Les patients diffèrent</b> : âge, ancienneté de la greffe, traitements associés.","<b>Les pratiques diffèrent</b> : rythme des dosages, protocoles d'immunosuppression.","<b>La mesure diffère</b> : deux techniques de dosage du tacrolimus ne donnent pas exactement le même résultat.","<b>Le temps passe</b> : les pratiques de 2019 ne sont plus celles d'aujourd'hui."])}
+${real}<h3>Un modèle de détection du sepsis, vérifié ailleurs</h3>
+<p>Un outil intégré à un dossier patient informatisé, utilisé dans des centaines d'hôpitaux américains, a été évalué par une équipe indépendante sur 38 455 hospitalisations.</p>
+${nums([["0,76 à 0,83","AUC annoncée par l'éditeur"],["0,63","AUC mesurée par l'équipe indépendante",1],["2 sur 3","sepsis non détectés par l'outil",1]],"Source : Wong et al., JAMA Internal Medicine, 2021.")}
+</section>
+<section><h2>La fuite de données</h2>
+<p>Il y a fuite quand, pendant l'apprentissage, le modèle a eu accès à la réponse. Il obtient alors d'excellents résultats au test, et de mauvais résultats avec de vrais patients. Trois formes classiques :</p>
+<ol class="num-list"><li><b>Le même patient des deux côtés.</b> Ses visites sont réparties entre apprentissage et test : le modèle le reconnaît.</li><li><b>Une information venue du futur.</b> Une variable enregistrée après l'événement, et qui le trahit.</li><li><b>Un indice qui n'est pas la maladie.</b> Le modèle repère l'hôpital ou l'appareil, pas l'état du patient. Des modèles de radiographie thoracique ont ainsi appris à reconnaître l'hôpital d'origine des clichés (Zech et al., 2018).</li></ol>
+${fig("Six patients, six visites chacun : partager par visite, ou par patient ?",w("leak"))}
+<p>Le partage se fait toujours par patient. Et pour chaque variable, un seul test : cette information existe-t-elle au moment où l'outil doit répondre ?</p>
+${exo({t:"Chasse à la fuite dans TacroAlerte",s:["L'outil reçoit huit variables pour chaque visite. Le partage des données est décrit ainsi : « 31 000 visites réparties au hasard, 80 % pour l'apprentissage, 20 % pour le test ».","Pour chaque variable : est-elle connue le jour de la visite ? Répondez ci-dessous.","Repérez le défaut du partage.","Prévoyez l'effet sur l'AUC annoncée : hausse ou baisse après correction ?"],d:"5 minutes",m:"papier et crayon",p:"les variables à retirer et une phrase de justification",w:w("sorter"),
+ c:tb(["Élément","Connu le jour de la visite ?","Verdict"],[["Dose prescrite à la visite suivante","Non : décidée après le résultat","Fuite : à retirer"],["Mention « surdosage » du compte rendu","Non : rédigée après le dosage","Fuite : à retirer"],["Partage au hasard des 31 000 visites","Un même patient des deux côtés","À refaire par patient"],["Les six autres variables","Oui","À conserver"]])+`<p>Pourquoi la dose de la visite suivante est une fuite, dans l'ordre du calendrier :</p>${steps([["Jour de la visite","L'outil doit prédire, avec ce qui est connu ce jour-là."],["Deux jours après","Le dosage revient : 14 ng/mL, au-dessus de la cible."],["Le médecin réagit","Il baisse la dose pour la visite suivante."],["Dans la base","Sur la ligne de la visite, on enregistre : « dose suivante : baissée »."]])}<p>Donnée au modèle, cette variable contient déjà la réponse : il lit la décision du médecin, il ne prévoit rien. Après correction, l'AUC baisse.</p>`})}
+</section>
+<section><h2>TacroAlerte, une fois les erreurs corrigées</h2>
+<p>AUC selon les données de test, sur une échelle de 0 à 1. Chiffres fictifs, construits pour le cours.</p>
+${hbars([["Annoncée par l'éditeur",0.86],["Sans fuite, test interne",0.78],["Validation externe, CHU B",0.71,1]])}
+<p>Le chiffre honnête est celui mesuré sans fuite, sur des patients d'un autre centre.</p>
+</section>
+${cmp([["« 2 400 patients, c'est beaucoup, donc c'est fiable. »","La taille ne dit rien de la diversité : un seul centre reste un seul centre."],["« L'outil est validé. »","Validé sur quelles données : internes, plus récentes, ou d'un autre centre ?"],["« L'AUC est de 0,86. »","Mesurée comment ? Avec quel partage, et quelles variables ?"]])}
+${quiz([["Un modèle est testé sur des patients du même hôpital, admis l'année suivante. C'est une validation…",["interne","temporelle","externe"],1,"Même centre, patients plus récents : c'est une validation temporelle."],["Parmi ces variables, laquelle est une fuite pour prédire un surdosage à la prochaine visite ?",["Le poids du patient","La dose prescrite après cette visite","Les trois derniers dosages"],1,"La dose prescrite après la visite est décidée une fois le résultat connu : elle trahit la réponse."],["« Validé sur 10 000 patients » vous renseigne sur…",["la taille de l'échantillon, rien de plus","la qualité de l'outil","sa performance dans votre service"],0,"La taille ne dit rien de la diversité des patients, ni de la performance chez vous."]])}
+${ret(["Lire d'abord la question et les données ; le chiffre de performance vient en dernier.","Demander le niveau de validation : interne, temporelle ou externe.","Pour chaque variable : était-elle connue au moment de la prédiction ?"],"Mesurer la performance. Que signifie une AUC de 0,71 en nombre d'alertes justes et fausses ? Prévoyez une calculatrice.")}
+${ficheBlk(1)}${srcs([SRC.wong,SRC.zech])}${pager(1)}</div>`;}
+
+/* ---------- Séance 2 ---------- */
+function s2(){return `<div class="page">${head(2,"Sensibilité, valeur prédictive, seuil : traduire un chiffre de performance en alertes justes et en alertes fausses.")}
+${situ(["Le CHU B a testé TacroAlerte pendant six mois, sur <b>1 000 visites</b> de patients greffés.","L'éditeur résume le résultat ainsi : « L'outil a raison dans 76 % des cas. »","Le pharmacien responsable hésite : l'équipe devra traiter chaque alerte."],"76 % de bonnes réponses : est-ce suffisant pour l'utiliser ?")}
+<section style="max-width:none"><h2>Quatre cas possibles pour chaque visite</h2>
+<p>Pour chaque visite, deux questions : le patient a-t-il été surexposé ? L'outil a-t-il alerté ? Chaque visite tombe dans une case et une seule. Au départ, le simulateur montre les 1 000 visites du CHU B, avec une alerte à partir de 30 % de risque. Changez le seuil, puis la fréquence de la surexposition.</p>
+${fig("Le simulateur : 1 000 visites, un outil, un seuil",w("sim"))}
+${tb(["Mesure","La question","Au CHU B, seuil 30 %"],[["Sensibilité","Parmi les surexposés, combien sont alertés ?","160 / 200 = 80 %"],["Spécificité","Parmi les autres, combien sont laissés tranquilles ?","600 / 800 = 75 %"],["VPP","Quand l'outil alerte, a-t-il raison ?","160 / 360 = 44 %"],["VPN","Quand il se tait, a-t-il raison ?","600 / 640 = 94 %"]])}
+<p>Sensibilité et spécificité se lisent en partant de l'état réel du patient ; VPP et VPN, en partant de ce que l'outil a dit. C'est la VPP qui intéresse l'équipe : au CHU B, plus d'une alerte sur deux est fausse.</p>
+${stmt("Sensibilité et spécificité décrivent l'outil. VPP et VPN décrivent l'outil dans une population.")}
+</section>
+<section><h2>Le rôle de la fréquence</h2>
+${poll("Même outil, mais chez des patients stables : la surexposition y est quatre fois plus rare. La VPP…",["reste à 44 %","augmente","chute"],2,"Elle chute. De combien ? C'est ce que vous allez calculer, puis vérifier avec le simulateur.")}
+${exo({t:"Le même outil chez des patients stables",s:["Population : 2 000 visites de patients greffés depuis plus d'un an. La surexposition y est rare : 5 % des visites.","L'outil garde sa sensibilité (80 %) et sa spécificité (75 %).","Remplissez la matrice de confusion.","Calculez la VPP et la VPN, puis vérifiez vos réponses ci-dessous."],d:"5 minutes",m:"papier, crayon, calculatrice",p:"la matrice remplie, la VPP et la VPN",w:w("chk2"),
+ c:tb(["","Surexposition","Pas de surexposition","Total"],[["Alerte","80","475","555"],["Pas d'alerte","20","1 425","1 445"],["Total","100","1 900","2 000"]])+`<p>VPP = 80 / 555 = 14 %. VPN = 1 425 / 1 445 = 98,6 %. Même outil, même seuil : quand l'outil sonne, il se trompe environ six fois sur sept. Erreur fréquente : appliquer 75 % aux 2 000 visites au lieu des 1 900 sans surexposition.</p>`})}
+<p>La VPP suit la fréquence de l'événement. Avec une sensibilité de 80 % et une spécificité de 75 %, elle vaut 68 % quand 40 % des visites sont suivies d'une surexposition, 44 % à 20 %, 26 % à 10 %, 14 % à 5 % et 3 % à 1 %. Un outil se juge donc dans la population où il sera utilisé.</p>
+</section>
+<section><h2>Que vaut « 76 % de bonnes réponses » ?</h2>
+${nums([["76 %","Exactitude de TacroAlerte au CHU B"],["80 %","Exactitude d'un outil qui n'alerte jamais",1]])}
+<p>Au CHU B, 80 % des visites se passent sans surexposition. Un outil muet a donc raison 800 fois sur 1 000, sans rien détecter. L'exactitude seule ne renseigne pas quand l'événement est minoritaire.</p>
+</section>
+<section><h2>Le seuil d'alerte</h2>
+<p>TacroAlerte calcule un risque entre 0 et 100 % pour chaque visite. Quelqu'un a décidé : « alerte à partir de 30 % ». C'est un réglage. Le baisser repère plus de surexpositions et produit plus de fausses alertes ; le monter fait l'inverse.</p>
+${tb(["Seuil","Sensibilité","Spécificité","Alertes","Manquées","VPP"],[["10 %","95 %","45 %","630","10","30 %"],["30 %","80 %","75 %","360","40","44 %"],["50 %","55 %","90 %","190","90","58 %"],["70 %","30 %","97 %","84","140","71 %"]],{hl:1})}
+<p class="cap">Pour 1 000 visites au CHU B, dont 200 surexpositions. Aucune ligne n'est « la bonne » : chacune répartit autrement les erreurs.</p>
+<h3>L'AUC</h3>
+<p>L'AUC résume tous les seuils en un chiffre : c'est la probabilité qu'un patient surexposé reçoive un score plus élevé qu'un patient qui ne l'est pas. À 0,5, l'outil classe au hasard ; à 1, il classe parfaitement. Elle ne dit ni quel seuil choisir, ni combien d'alertes seront fausses chez vos patients, ni si les risques affichés sont justes.</p>
+<h3>Que coûte chaque erreur ?</h3>
+${cols([["Faux négatif","Surexposition non repérée : le patient reste trop dosé jusqu'à la visite suivante, avec un risque de toxicité rénale et neurologique."],["Faux positif","Une alerte pour rien : un dosage ou un appel de plus. Répétées, les fausses alertes fatiguent l'équipe, qui finit par ne plus les lire."]])}
+${exo({t:"Choisir un seuil pour deux services",s:["Service A : trois premiers mois après la greffe, un pharmacien dédié, dosages faciles à ajouter.","Service B : 600 patients stables suivis à distance par une seule infirmière de coordination.","Avec le tableau des quatre seuils, proposez un seuil pour chaque service.","Justifiez en une phrase : quelle erreur acceptez-vous, et pourquoi ?"],d:"3 minutes",m:"le tableau des quatre seuils",p:"deux seuils et deux phrases de justification",
+ c:cols([["Service A : seuil bas, 10 à 30 %","Une surexposition précoce coûte cher et l'équipe peut absorber les alertes. On accepte des fausses alertes."],["Service B : seuil haut, 50 %","Une infirmière ne peut pas traiter des centaines d'alertes, et l'événement est rare. On accepte d'en manquer, avec un dosage systématique en filet de sécurité."]])+`<p>D'autres réponses sont recevables si elles s'appuient sur le coût des erreurs et les moyens de l'équipe. Un seuil se choisit pour un usage, se documente, et se réexamine.</p>`})}
+<p><b>Pour aller plus loin.</b> Recalculez la VPP au seuil de 50 % chez les patients stables : 5 % de surexpositions, 2 000 visites.</p>
+${reveal("Voir la réponse",`<p>55 vrais positifs et 190 faux positifs : VPP = 55 / 245 = 22 %. Vérifiez avec le simulateur, au seuil de 50 % et à 5 % de surexpositions.</p>`)}
+</section>
+<section><h2>Retour sur le modèle de sepsis de la séance 1</h2>${real}
+<p>Validation externe sur 38 455 hospitalisations, avec un sepsis dans 7 % d'entre elles.</p>
+${nums([["33 %","Sensibilité : 2 sepsis sur 3 ne déclenchent pas d'alerte",1],["12 %","VPP : environ 7 alertes sur 8 sont fausses",1],["18 %","des patients hospitalisés reçoivent une alerte"]],"Source : Wong et al., JAMA Internal Medicine, 2021.")}
+<p>Avec un événement peu fréquent, une VPP basse était prévisible : c'est le calcul de l'exercice sur les patients stables.</p>
+</section>
+${cmp([["« L'outil détecte 80 % des cas, donc une alerte est fiable à 80 %. »","C'est confondre sensibilité et VPP. Ici, la VPP est de 44 %."],["« AUC élevée, donc outil utile. »","L'AUC ne dit ni le seuil ni le nombre de fausses alertes."],["« On a choisi le seuil qui donnait le meilleur résultat sur le test. »","Le résultat est alors trop optimiste : le seuil se fixe avant."]])}
+${quiz([["Sur 50 alertes, 10 correspondent à une vraie surexposition. La VPP vaut…",["20 %","80 %","on ne peut pas savoir"],0,"10 / 50 = 20 %."],["On utilise le même outil dans un service où l'événement est plus rare. La VPP…",["augmente","ne change pas","diminue"],2,"Moins d'événements : il y a plus de fausses alertes pour chaque vraie."],["On relève le seuil d'alerte de 30 % à 50 %. On obtient…",["plus d'alertes","moins d'alertes et plus de cas manqués","une meilleure AUC"],1,"Moins d'alertes, plus de cas manqués. L'AUC, elle, ne dépend pas du seuil."]])}
+${ret(["Toujours demander les deux types d'erreurs : cas manqués et fausses alertes.","La VPP dépend de la fréquence de l'événement chez vos patients.","Le seuil est un choix, qui se justifie par le coût des erreurs."],"Biais et équité. L'outil détecte 80 % des surexpositions en moyenne : est-ce vrai pour tous les patients ?")}
+${ficheBlk(2)}${srcs([SRC.wong])}${pager(2)}</div>`;}
+
+/* ---------- Séance 3 ---------- */
+function s3(){return `<div class="page">${head(3,"Une performance moyenne peut cacher un groupe de patients pour qui l'outil fonctionne mal. Apprendre à le chercher.")}
+${situ(["Mme D., 71 ans, est greffée du rein depuis quatre mois. À sa dernière visite, <b>TacroAlerte n'a pas alerté</b>.","Trois semaines plus tard, sa concentration est de 14,2 ng/mL, bien au-dessus de la cible.","L'interne se souvient de deux autres patients âgés dans le même cas ce mois-ci."],"Erreur isolée, ou outil moins fiable pour certains patients ?")}
+<section><h2>Chercher l'écart</h2>
+${poll("TacroAlerte repère 80 % des surexpositions. Chez les patients de 65 ans et plus, ce sera…",["80 % aussi","impossible à dire sans compter","forcément moins"],1,"Une moyenne ne dit rien d'un sous-groupe. Comptons.")}
+${tb(["Groupe","Visites","Surexpositions","Alertées","Sensibilité"],[["Moins de 65 ans","700","130","118","91 %"],["65 ans et plus","300","70","42","60 %"],["Ensemble","1 000","200","160","80 %"]])}
+<p class="cap">Les 1 000 visites du CHU B, avec le même seuil d'alerte (30 %) pour tous.</p>
+${fig("Les 200 surexpositions, ensemble puis par âge",w("regroup"),"Un point = 10 patients surexposés. Plein : signalé par l'outil. Cerclé de rouge : manqué.")}
+${stmt("Une moyenne peut cacher un groupe mal servi.")}
+<p>Tant qu'on ne découpe pas les résultats, on ne le voit pas. Pour Mme D., 71 ans, l'absence d'alerte rassure beaucoup moins que pour un patient plus jeune.</p>
+</section>
+<section><h2>L'écart est-il réel ?</h2>
+<p>Un pourcentage calculé sur peu de cas est incertain. L'intervalle de confiance à 95 % montre cette incertitude. Faites varier le nombre de cas chez les 65 ans et plus, à sensibilité observée égale.</p>
+${fig("Sensibilité mesurée (le point) et intervalle de confiance à 95 % (le trait)",w("ci"))}
+<p>Trois réflexes devant un résultat par sous-groupe :</p>
+${ul(["<b>L'effectif</b> : combien d'événements dans le groupe ?","<b>L'intervalle</b> : l'écart dépasse-t-il l'incertitude ?","<b>La plausibilité</b> : existe-t-il une raison clinique ou pharmacologique ?"])}
+</section>
+<section><h2>Quatre sources de biais</h2>
+${tb(["Source","Ce qui se passe"],[["Représentation","Un groupe est rare ou absent des données d'apprentissage."],["Mesure","L'instrument est moins exact pour certains patients."],["Critère de substitution","On prédit autre chose que ce qu'on veut, faute de mieux."],["Usage","L'outil sert à des patients ou à une tâche non prévus."]])}
+<p>Un biais vient presque toujours des données ou de l'usage, rarement du calcul.</p>
+${real}<h3>Prédire les dépenses à la place des besoins</h3>
+<p>Un algorithme américain désignait les patients à inscrire dans un programme de suivi renforcé. Il prédisait leurs dépenses de santé, et non leur état de santé. Or, à besoin égal, on dépensait moins pour les patients noirs.</p>
+${nums([["17,7 %","des patients désignés par l'algorithme étaient noirs"],["46,5 %","l'auraient été si l'on avait prédit l'état de santé",1]],"Source : Obermeyer et al., Science, 2019.")}
+${real}<h3>L'oxymètre de pouls</h3>
+<p>Il surestime la saturation chez les patients à peau foncée : les hypoxémies non détectées y sont environ trois fois plus fréquentes, 11,7 % contre 3,6 % (Sjoding et al., 2020). Un biais de mesure se transmet à tous les outils qui utilisent la mesure.</p>
+<h3>CYP3A5 et tacrolimus</h3>
+<p>Les patients qui expriment CYP3A5 éliminent plus vite le tacrolimus. Leur proportion varie selon l'origine géographique des populations : un outil appris sur une population peut mal servir une autre.</p>
+${exo({t:"Nommer la source du biais",s:["Lisez les quatre situations.","Pour chacune, choisissez la source principale du biais.","Justifiez en une phrase."],d:"5 minutes",m:"papier et crayon",p:"une source par situation, avec une phrase d'explication",w:w("match"),
+ c:tb(["Situation","Source principale","Pourquoi"],[["A. Photos de peaux claires","Représentation","Les autres peaux manquent à l'apprentissage"],["B. Nombre de consultations","Critère de substitution","Consulter peu ne veut pas dire aller bien"],["C. Adulte, puis pédiatrie","Usage","La population n'est plus celle de la validation"],["D. Saturation au doigt","Mesure","L'erreur de l'oxymètre passe dans le score"]])})}
+</section>
+<section><h2>D'où vient l'écart de TacroAlerte ?</h2>
+${tb(["","CHU A (apprentissage)","CHU B (utilisation)"],[["Patients de 65 ans et plus","8 %, soit 192 patients sur 2 400","30 % des visites"],["Médicaments associés par patient","4 en moyenne","7 en moyenne chez les plus âgés"],["Performance vérifiée par âge","Non","Oui, par l'équipe du CHU B"]])}
+<p>Le modèle a peu vu de patients âgés : il les connaît mal. C'est un biais de représentation.</p>
+<h3>Que faire d'un écart confirmé ?</h3>
+${steps([["Mesurer","Par sous-groupe, avec effectifs et intervalles."],["Comprendre","Quelle source : données, mesure, critère, usage ?"],["Corriger","Plus de données du groupe, ou un seuil adapté."],["Encadrer","Restreindre l'usage et surveiller dans le temps."]])}
+<p>Restreindre l'usage est une décision à la portée de l'équipe, dès aujourd'hui.</p>
+<h3>« Équitable » a plusieurs définitions</h3>
+${ul(["Même <b>sensibilité</b> : on manque autant de cas dans chaque groupe.","Même <b>VPP</b> : une alerte a la même valeur dans chaque groupe.","Même <b>calibration</b> : un risque de 30 % veut dire 30 % pour tous."])}
+<p>Quand la fréquence de l'événement diffère entre groupes, on ne peut pas toutes les satisfaire en même temps.</p>
+${exo({t:"Rédiger une restriction d'usage",s:["Vous écrivez le paragraphe « limites » de la procédure du service pour TacroAlerte.","En trois phrases : pour quels patients l'outil ne doit pas être utilisé seul, et pourquoi.","Ajoutez la règle de remplacement : que fait-on pour ces patients ?","Indiquez la donnée à demander à l'éditeur."],d:"5 minutes",m:"papier et crayon",p:"un paragraphe de quatre à cinq phrases",
+ w:`<label class="lbl" for="t3">Votre paragraphe</label><textarea id="t3" placeholder="Écrivez ici, puis comparez avec la correction."></textarea>`,
+ c:`<blockquote class="doc"><p class="k">Procédure du service, limites de l'outil</p><p>« Chez les patients de 65 ans et plus, TacroAlerte ne détecte que 60 % des surexpositions (CHU B, 70 cas). L'absence d'alerte ne dispense donc pas du dosage prévu au protocole. Cette limite sera réexaminée quand l'éditeur aura fourni une validation dans cette tranche d'âge. »</p></blockquote>`})}
+</section>
+${cmp([["« Nous n'utilisons ni l'âge ni l'origine : l'outil ne peut pas être biaisé. »","Le biais vient des données et du critère prédit, pas seulement des variables."],["« 80 % de sensibilité, c'est valable pour tout le monde. »","C'est une moyenne : demander le résultat par sous-groupe."],["« On a trouvé un écart dans un groupe de 12 patients. »","Regarder l'intervalle de confiance avant de conclure."]])}
+${quiz([["Un outil a 85 % de sensibilité en moyenne. Pour les patients insuffisants rénaux…",["c'est aussi 85 %","on ne sait pas sans résultat par sous-groupe","c'est forcément moins"],1,"Une moyenne ne dit rien d'un sous-groupe."],["Un modèle prédit le nombre de passages aux urgences pour estimer la gravité. Le risque est un biais de…",["mesure","critère de substitution","représentation"],1,"On prédit les passages aux urgences faute de mesurer la gravité elle-même."],["Sensibilité de 50 % dans un groupe de 8 cas. Vous concluez…",["l'outil est mauvais pour ce groupe","rien encore : effectif trop faible","l'outil est bon"],1,"Avec 8 cas, l'intervalle va d'environ 15 à 85 % : on ne peut rien conclure."]])}
+${ret(["Demander les résultats par sous-groupe, avec les effectifs.","Chercher la source : représentation, mesure, critère de substitution, usage.","Écrire les limites de l'outil dans la procédure du service."],"Incertitude et calibration. Quand TacroAlerte affiche « 70 % de risque », que veut dire ce chiffre, et peut-on le croire ?")}
+${ficheBlk(3)}${srcs([SRC.ober,SRC.sjod])}${pager(3)}</div>`;}
+
+/* ---------- Séance 4 ---------- */
+function calSVG(P,aria){const X=v=>50+v*3.4,Y=v=>360-v*3.4;let g="";[0,25,50,75,100].forEach(v=>{g+=`<line x1="${X(0)}" y1="${Y(v)}" x2="${X(100)}" y2="${Y(v)}" class="gl"/><line x1="${X(v)}" y1="${Y(0)}" x2="${X(v)}" y2="${Y(100)}" class="gl"/>`;});[0,50,100].forEach(v=>{g+=`<text x="${X(v)}" y="382" class="tk" text-anchor="middle">${v} %</text><text x="42" y="${Y(v)+5}" class="tk" text-anchor="end">${v} %</text>`;});
+ return `<svg viewBox="0 0 410 410" style="max-width:410px" role="img" aria-label="${aria}">${g}<line x1="${X(0)}" y1="${Y(0)}" x2="${X(100)}" y2="${Y(100)}" class="dg"/><text x="${X(100)}" y="${Y(100)-8}" class="tk" text-anchor="end">calibration parfaite</text><polyline points="${P.map(([a,o])=>`${X(a)},${Y(o)}`).join(" ")}" class="cl"/>${P.map(([a,o])=>`<circle cx="${X(a)}" cy="${Y(o)}" r="8" class="cpt"/>`).join("")}<text x="${X(50)}" y="404" class="ax" text-anchor="middle">Risque annoncé</text><text x="${X(0)}" y="12" class="ax">Fréquence observée</text></svg>`;}
+function s4(){return `<div class="page">${head(4,"Quand un outil affiche « 70 % de risque » : que veut dire ce chiffre, peut-on le croire, et que faire quand l'outil ne sait pas ?")}
+${situ(["M. L., 58 ans, greffé depuis sept mois. Aujourd'hui, TacroAlerte affiche : <b>risque de surexposition à la prochaine visite, 70 %</b>.","Le néphrologue vous appelle : « 70 %, c'est beaucoup. Je baisse la dose tout de suite ? »","Vous savez classer les patients avec cet outil. Mais le chiffre lui-même ?"],"Que signifie « 70 % », et ce chiffre est-il juste ?")}
+<section style="max-width:none"><h2>Annoncé contre observé</h2>
+${poll("L'outil annonce 70 % de risque pour M. L. Cela veut dire…",["que M. L. sera surexposé à 70 %","que sur 100 patients comme lui, environ 70 le seront","que l'outil est fiable à 70 %"],1,"On ne peut pas le vérifier sur un patient. On le vérifie sur un groupe : c'est la calibration.")}
+<div style="max-width:900px">${tb(["Risque annoncé","Visites","Moyenne annoncée","Surexpositions","Fréquence observée"],[["Moins de 10 %","370","5 %","10","3 %"],["10 à 30 %","270","19 %","30","11 %"],["30 à 50 %","170","40 %","50","29 %"],["50 à 70 %","106","60 %","50","47 %"],["70 % et plus","84","85 %","60","71 %"]])}</div>
+<p class="cap">Les 1 000 visites du CHU B, rangées par tranche de risque annoncé.</p>
+${fig("Le diagramme de calibration de TacroAlerte au CHU B",w("calib"))}
+<p>Sur la diagonale, le chiffre annoncé est juste. Sous la diagonale, l'outil surestime le risque ; au-dessus, il le sous-estime. Ici, tous les points sont sous la diagonale.</p>
+<h3>Pourquoi TacroAlerte surestime au CHU B</h3>
+${nums([["27 %","Risque moyen annoncé au CHU B : c'est la fréquence réelle au CHU A, où l'outil a appris"],["20 %","Fréquence réellement observée au CHU B",1]])}
+<p>Le modèle a appris la fréquence de l'hôpital où il a été construit. Un outil peut bien classer les patients et se tromper sur les chiffres.</p>
+<div style="max-width:900px">${cols([["Classer : la discrimination","Donner un score plus élevé aux patients qui feront l'événement. Se mesure par l'AUC (séance 2)."],["Chiffrer : la calibration","Annoncer des risques qui correspondent aux fréquences observées. Se lit sur le diagramme."]])}</div>
+<p>Dès qu'on décide à partir du chiffre affiché, la calibration devient indispensable.</p>
+${exo({t:"Lire la calibration d'un autre hôpital",s:["Au CHU C, les risques annoncés de 10, 30, 50, 70 et 90 % correspondent à 22, 41, 58, 69 et 74 % de surexpositions observées.","Tracez deux axes de 0 à 100 % sur une feuille et placez les cinq points.","Où l'outil sous-estime-t-il ? Où surestime-t-il ?","Le service applique la règle « baisser la dose à partir de 50 % ». Quels patients sont mal servis ?"],d:"5 minutes",m:"une feuille, une règle",p:"le diagramme complété et deux phrases de lecture",
+ c:calSVG([[10,22],[30,41],[50,58],[70,69],[90,74]],"Diagramme de calibration au CHU C : la courbe coupe la diagonale")+ul(["À gauche, au-dessus de la diagonale : l'outil <b>rassure à tort</b>.","À droite, en dessous : il <b>alarme trop</b>.","Autour de 70 % : il est juste."])+`<p>Le sens de l'erreur change avec le niveau de risque. Avec la règle « baisser la dose à partir de 50 % », les patients annoncés sous ce seuil sont mal servis : leur risque réel est plus élevé que ce que l'outil affiche.</p>`})}
+<h3>Le recalibrage local</h3>
+<p>On garde le classement de l'outil, et on corrige ses chiffres avec les données du service. Dans le diagramme ci-dessus, le bouton « Après recalibrage » montre le résultat : les points rejoignent la diagonale, l'ordre des patients ne change pas.</p>
+${steps([["Recueillir","Quelques centaines de visites : score et résultat."],["Comparer","Annoncé contre observé, par tranche."],["Ajuster","Une correction calculée avec l'éditeur ou un biostatisticien."],["Revérifier","Chaque année, et après tout changement de pratique."]])}
+<p>Recalibrer suppose d'avoir d'abord observé l'outil sans lui obéir.</p>
+</section>
+<section><h2>Quand l'outil ne sait pas</h2>
+${cols([["Variabilité du patient","Le hasard qui reste. À dose égale, la concentration fluctue : horaire de prise, alimentation, épisode digestif. Plus de données n'y changent rien."],["Ignorance du modèle","Ce que l'outil n'a pas vu : un patient qui ne ressemble pas à ceux de l'apprentissage. Des données supplémentaires peuvent la réduire."]])}
+<p>La seconde est la plus dangereuse : l'outil répond quand même, avec la même assurance. Il devrait s'abstenir pour :</p>
+${ul(["un enfant, une femme enceinte ;","un patient avec moins de trois dosages, exclu de l'apprentissage (séance 1) ;","un médicament inhibiteur ou inducteur enzymatique tout juste introduit ;","des données manquantes ou aberrantes en entrée."])}
+${fig("Deux patients, la même prévision",w("iv"),"Concentration prévue à la prochaine visite, avec son intervalle à 90 %. La bande bleue est la zone cible.")}
+${exo({t:"Vérifier des intervalles, puis parler au médecin",s:["L'outil a fourni 200 prévisions avec un intervalle à 90 %. La concentration mesurée est tombée dans l'intervalle 162 fois.","Calculez le taux de couverture. Les intervalles sont-ils trop larges, ou trop étroits ?","Revenez à M. L. : rédigez en deux phrases votre réponse au néphrologue sur le « 70 % »."],d:"5 minutes",m:"papier, crayon, calculatrice",p:"le calcul commenté et la réponse au médecin",w:w("cov"),
+ c:`<p>162 / 200 = 81 %, au lieu des 90 % annoncés : les intervalles sont trop étroits, l'outil est trop sûr de lui.</p><blockquote class="doc"><p class="k">Réponse possible au néphrologue</p><p>« Chez nous, quand l'outil annonce 70 % ou plus, la surexposition se confirme environ 7 fois sur 10. Le risque est réel, mais l'outil a tendance à exagérer : je propose un dosage anticipé cette semaine avant de modifier la dose. »</p></blockquote>`})}
+</section>
+${cmp([["« L'AUC est bonne, donc les pourcentages sont fiables. »","Classer et chiffrer sont deux qualités distinctes : demander la calibration."],["« L'outil dit 90 %, il est donc sûr de lui. »","Un risque élevé n'est pas une certitude sur la qualité de la prévision."],["« Il a donné un chiffre, donc il sait. »","Il répond toujours, même pour un patient qu'il n'a jamais rencontré."]])}
+${quiz([["Parmi 200 patients à qui l'outil annonce 20 % de risque, 80 font l'événement. L'outil…",["est bien calibré","sous-estime le risque","surestime le risque"],1,"80 sur 200, c'est 40 %, pour 20 % annoncés : l'outil sous-estime."],["On double tous les risques affichés. L'AUC…",["double","ne change pas","diminue"],1,"L'AUC dépend du classement des patients, que le doublement ne change pas."],["L'outil n'a jamais vu de patient sous un nouvel antifongique. C'est une incertitude…",["liée à la variabilité du patient","liée à l'ignorance du modèle","sans importance"],1,"Ce patient ne ressemble à aucun de ceux de l'apprentissage."]])}
+${ret(["Un pourcentage se vérifie sur un groupe : annoncé contre observé.","Bien classer ne garantit pas des chiffres justes : recalibrer localement.","Savoir pour quels patients l'outil n'a pas été construit."],"IA générative et information sur le médicament. Un patient arrive au comptoir avec la réponse d'un assistant conversationnel sur son traitement.")}
+${ficheBlk(4)}${srcs([],"Tous les chiffres de cette séance sont ceux de l'outil fictif TacroAlerte.")}${pager(4)}</div>`;}
+
+/* ---------- Séance 5 ---------- */
+function s5(){return `<div class="page">${head(5,"Un patient arrive avec la réponse d'un assistant conversationnel sur son traitement. Comprendre d'où vient cette réponse, la vérifier, et répondre au patient.")}
+${situ(["M. R., 54 ans, greffé du rein depuis deux ans, prend du tacrolimus. Il se sent abattu depuis quelques semaines.","Il a demandé à un assistant conversationnel s'il pouvait prendre du <b>millepertuis</b>.","Il vous tend son téléphone : « Il dit que c'est possible. Vous m'en donnez une boîte ? »"],"Comment vérifier cette réponse, et que dire à M. R. ?")}
+<section style="max-width:none"><h2>Comment un modèle de langage écrit</h2>
+${poll("Quand un assistant conversationnel répond à une question sur un médicament, il…",["consulte une base officielle","calcule la suite de mots la plus probable","recopie un texte trouvé en ligne"],1,"Sauf s'il a été relié à des sources, il ne consulte rien : il écrit.")}
+${steps([["Découper","La question est coupée en fragments de mots."],["Prédire","Il calcule le fragment suivant le plus probable."],["Répéter","Fragment après fragment, jusqu'à la fin."],["Afficher","Un texte fluide, au ton assuré."]])}
+<p style="max-width:720px">Il a appris ces probabilités sur une très grande quantité de textes. À aucune étape il ne consulte une source, sauf si on l'y a relié.</p>
+${fig("Faites écrire le modèle",w("gen"),"Probabilités inventées pour l'illustration. Le principe est réel : après « peut », augmenter et diminuer se disent presque aussi souvent.")}
+${stmt("Un modèle de langage écrit ce qui est plausible. Il ne vérifie pas ce qui est vrai.")}
+<p style="max-width:720px">Son ton est le même quand il a raison et quand il se trompe.</p>
+<h3>Quatre erreurs typiques</h3>
+<div style="max-width:900px">${tb(["Erreur","Exemple"],[["Fait faux ou inversé","Le sens d'une interaction, une dose, une unité."],["Référence inventée","Un titre et une date crédibles, pour un document qui n'existe pas."],["Omission","Tout est exact, mais la contre-indication n'est pas mentionnée."],["Information périmée","Le modèle ignore ce qui a changé depuis son entraînement."]])}</div>
+<p style="max-width:720px">Les trois premières ne se voient pas à la lecture : il faut vérifier.</p>
+</section>
+<section><h2>Vérifier la réponse de M. R.</h2>
+<blockquote class="doc"><p class="k">La réponse montrée par M. R., fictive, rédigée pour l'exercice</p><p>« Le millepertuis est une plante naturelle, généralement bien tolérée. Il peut augmenter légèrement le taux de tacrolimus : il suffit d'espacer les deux prises de deux heures. Source : ANSM, Bulletin de pharmacovigilance n° 47, 2021. »</p></blockquote>
+${exo({t:"Vérifier la réponse, affirmation par affirmation",s:["Découpez la réponse en affirmations vérifiables : il y en a quatre.","Pour chacune : juste, fausse, ou invérifiable ? Répondez ci-dessous.","Notez la source dans laquelle vous avez vérifié.","Qu'est-ce qui manque dans cette réponse ?"],d:"10 minutes",m:"le Thesaurus des interactions de l'ANSM, en ligne",p:"un tableau à quatre lignes et la mention manquante",w:w("claims"),
+ c:tb(["Affirmation","Verdict","Où vérifier"],[["« Plante bien tolérée »","Trompeur : inducteur enzymatique puissant","Thesaurus, RCP"],["« Augmente le taux de tacrolimus »","Faux : il le diminue","Thesaurus"],["« Espacer de deux heures »","Faux : l'induction dure des jours","Thesaurus, RCP"],["« Bulletin n° 47, 2021 »","Référence introuvable","Site de l'ANSM"]])+`<p><b>Ce qui manque :</b> l'association est contre-indiquée, avec un risque de rejet du greffon.</p>`})}
+<h3>Vérifier en quatre étapes</h3>
+${steps([["Isoler","Chaque affirmation vérifiable, une par une."],["Vérifier","Dans une source de référence, pas en reposant la question."],["Ouvrir","La référence citée existe-t-elle ? Dit-elle cela ?"],["Compléter","Que manque-t-il : contre-indication, conduite à tenir ?"]])}
+<p>Reposer la question n'est pas vérifier.</p>
+<h3>Où vérifier une information sur un médicament</h3>
+${tb(["Source","Ce qu'on y trouve","Produite par"],[["RCP, base de données publique des médicaments","Posologie, contre-indications, interactions","Autorités de santé"],["Thesaurus des interactions médicamenteuses","Niveau de contrainte, conduite à tenir","ANSM"],["CRAT","Grossesse et allaitement","Centre de référence hospitalier"],["Recommandations de bonne pratique","Stratégie thérapeutique","HAS, sociétés savantes"]])}
+<p>Une source de référence a un auteur, une date et un responsable.</p>
+<h3>Tacrolimus : cinq associations à connaître</h3>
+${tb(["Associé","Effet sur le tacrolimus","Risque"],[["Millepertuis","Concentration diminuée","Rejet : contre-indiqué"],["Rifampicine","Concentration diminuée","Rejet"],["Antifongiques azolés, certains macrolides","Concentration augmentée","Toxicité"],["Jus de pamplemousse","Concentration augmentée","Toxicité : à éviter"],["Anti-inflammatoires non stéroïdiens","Pas d'effet sur la concentration","Toxicité rénale additive"]])}
+<p class="cap">Sens de l'effet. Le niveau de contrainte se vérifie dans le Thesaurus en vigueur.</p>
+</section>
+<section><h2>Au comptoir</h2>
+<h3>Un assistant relié à des sources</h3>
+${cols([["Ce que cela améliore","Les références existent et peuvent être ouvertes. Les réponses s'appuient sur des textes à jour."],["Ce qui reste à vérifier","Il peut mal lire le document, citer un passage hors de son contexte, ou choisir une source qui n'est pas la bonne."]])}
+<p>Mieux, mais pas infaillible : la vérification reste à la charge du professionnel.</p>
+<h3>À quoi s'en servir</h3>
+${tb(["Raisonnable, avec relecture","À risque sans vérification"],[["Reformuler en langage simple un texte déjà vérifié","Demander une posologie ou une interaction"],["Traduire une consigne pour un patient","Demander une référence bibliographique"],["Préparer une liste de questions pour un entretien","Trancher une contre-indication"]])}
+<p>L'outil travaille la forme. Le fond vient d'une source de référence.</p>
+<h3>Ce que l'on ne saisit jamais</h3>
+${ul(["Ni nom, ni date de naissance, ni numéro de sécurité sociale.","Aucune photographie d'ordonnance ou de compte rendu.","Décrire le cas en termes généraux : « patient greffé sous tacrolimus ».","N'utiliser que les outils autorisés par l'établissement ou l'officine."])}
+${exo({t:"Répondre à M. R.",s:["M. R. insiste : « c'est naturel, ça ne peut pas faire de mal ».","Écrivez, mot pour mot, ce que vous lui répondez.","Votre réponse doit accueillir, vérifier, expliquer et proposer une conduite."],d:"5 minutes",m:"papier et crayon",p:"quatre ou cinq phrases, telles que vous les diriez",
+ w:`<label class="lbl" for="t5">Votre réponse</label><textarea id="t5" placeholder="Écrivez ici, puis comparez avec la correction."></textarea>`,
+ c:tb(["Geste","Une formulation possible"],[["Accueillir sans juger","« Vous avez bien fait de me montrer cette réponse. »"],["Vérifier avec le patient","« Regardons ensemble ce que dit la référence officielle. »"],["Expliquer le risque","« Le millepertuis fait baisser votre tacrolimus : le greffon est moins protégé. »"],["Conclure et orienter","« Ne le prenez pas. Parlez de votre moral à votre équipe de greffe. »"]])+`<p>Le patient repart avec une conduite claire et une réponse à sa vraie demande.</p>`})}
+</section>
+${cmp([["« Il cite une source officielle, donc c'est fiable. »","Ouvrir la source : existe-t-elle, et dit-elle cela ?"],["« La réponse est claire et détaillée. »","La qualité de l'écriture ne dit rien de l'exactitude."],["« J'ai reposé la question, il a confirmé. »","Ce n'est pas une vérification : il faut une source indépendante."]])}
+${quiz([["Un assistant cite un article avec auteurs et année. Vous…",["considérez l'information comme vérifiée","cherchez l'article et lisez ce qu'il dit","reposez la question pour confirmer"],1,"Une référence citée se vérifie : existe-t-elle, et dit-elle cela ?"],["Millepertuis et tacrolimus : la concentration de tacrolimus…",["augmente","ne change pas","diminue, avec un risque de rejet"],2,"Le millepertuis est un inducteur enzymatique : la concentration baisse, le greffon est moins protégé."],["Quelle demande est raisonnable ?",["« Reformule ce paragraphe de notice pour un patient. »","« Quelle dose pour 70 kg ? »","« Donne-moi la référence de cette interaction. »"],0,"Reformuler un texte déjà vérifié est raisonnable ; les deux autres demandent une source de référence."]])}
+${ret(["Un texte fluide et assuré n'est pas un texte vérifié.","Vérifier chaque affirmation dans une source de référence, et ouvrir les références citées.","Au comptoir : accueillir, vérifier avec le patient, conclure par une conduite claire."],"Données de santé et cadre réglementaire. Que peut-on saisir dans un outil ou envoyer à un éditeur, et qui en répond ?")}
+${ficheBlk(5)}${srcs([SRC.bdpm,SRC.thes,SRC.crat])}${pager(5)}</div>`;}
+
+/* ---------- Séance 6 ---------- */
+function s6(){return `<div class="page">${head(6,"RGPD, dispositifs médicaux, règlement européen sur l'IA : ce qu'il faut savoir avant de confier des données à un outil ou de s'en servir.")}
+${situ(["L'éditeur de TacroAlerte propose d'« améliorer le modèle » avec les données du service.","Un interne prépare un fichier : <b>nom, date de naissance et trois ans de dosages</b> pour 480 patients.","Il s'apprête à l'envoyer par courriel, depuis sa messagerie personnelle."],"Qu'est-ce qui pose problème, et comment faire correctement ?")}
+<section><h2>Trois textes, trois questions</h2>
+${tb(["Texte","Ce qu'il encadre","La question"],[["RGPD, 2016","Les données","Que peut-on faire des données des patients ?"],["Règlement sur les dispositifs médicaux, 2017","Le produit","L'outil est-il sûr et performant pour l'usage annoncé ?"],["Règlement sur l'IA, 2024","Le système d'IA","Est-il maîtrisé tout au long de sa vie ?"]])}
+<p>Pour un outil comme TacroAlerte, les trois s'appliquent en même temps.</p>
+</section>
+<section style="max-width:none"><h2>Les données de santé</h2>
+${poll("L'interne retire les noms du fichier avant de l'envoyer. Est-ce suffisant ?",["Oui : les données sont anonymes","Non : date de naissance et dosages identifient encore","Oui, si l'éditeur promet d'effacer"],1,"Sans le nom, on retrouve un patient greffé avec sa date de naissance et son centre.")}
+${fig("Sans le nom, que reste-t-il pour retrouver une patiente ?",w("reid"),"Ordres de grandeur inventés pour l'illustration.")}
+<div style="max-width:900px">${tb(["Statut","Exemple","Conséquence"],[["Directement identifiante","Nom, date de naissance, dosages","Donnée personnelle de santé"],["Pseudonymisée","Code 0417 et dosages ; la table de correspondance existe","Toujours une donnée personnelle"],["Anonyme","Moyennes par service, sans retour possible à une personne","Hors du champ du RGPD"]])}</div>
+<p style="max-width:720px">Retirer le nom ne suffit pas à rendre une donnée anonyme : tant qu'on peut retrouver la personne, la donnée reste personnelle.</p>
+<h3>Six principes, appliqués au fichier de dosages</h3>
+<div style="max-width:900px">${tb(["Principe","Pour le fichier de l'interne"],[["Finalité","Dire à quoi serviront les données, avant de les transmettre"],["Minimisation","Ne transmettre que le nécessaire : pas le nom"],["Exactitude","Des données vérifiées et à jour"],["Durée limitée","Fixer une date de suppression chez l'éditeur"],["Sécurité","Chiffrement, accès restreints, pas de messagerie personnelle"],["Transparence","Les patients sont informés"]])}</div>
+<h3>Données de santé : interdites, sauf exceptions</h3>
+<p style="max-width:720px">L'article 9 du RGPD interdit en principe de traiter des données de santé. Trois exceptions sont utiles en pratique :</p>
+${ul(["<b>Les soins</b>, par des professionnels tenus au secret.","<b>Le consentement explicite</b> de la personne.","<b>La recherche et la santé publique</b>, dans un cadre fixé par la loi."])}
+<p style="max-width:720px">« Améliorer le produit d'un éditeur » n'entre pas dans l'exception des soins.</p>
+${exo({t:"Le fichier de l'interne",s:["Relisez la situation de départ et listez tout ce qui pose problème.","Pour chaque problème, nommez le principe concerné.","Proposez une manière correcte d'atteindre le même but.","Qui, dans l'établissement, doit être consulté en premier ?"],d:"5 minutes",m:"papier et crayon",p:"un tableau : problème, principe, correction",
+ c:tb(["Problème","Principe","Correction"],[["Nom et date de naissance transmis","Minimisation","Pseudonymiser ; la table reste au CHU"],["But flou : « améliorer le modèle »","Finalité","Projet décrit et validé"],["Messagerie personnelle","Sécurité","Canal sécurisé, hébergeur certifié"],["Patients non informés","Transparence","Information, droit de s'opposer"],["Décision prise seul","Responsabilité","C'est l'établissement qui décide"]])+`<p>Le circuit correct :</p>${steps([["Décrire","Le but, les données nécessaires, la durée."],["Protéger","Pseudonymiser, chiffrer, héberger chez un prestataire certifié."],["Encadrer","Un contrat avec l'éditeur, l'avis du délégué à la protection des données."],["Informer","Les patients, et tracer ce qui a été transmis."]])}<p>Premier réflexe : appeler le délégué à la protection des données.</p>`})}
+</section>
+<section style="max-width:none"><h2>L'outil lui-même</h2>
+${stmt("Un logiciel qui aide à décider d'un traitement est un dispositif médical.")}
+<p style="max-width:720px">Il doit porter le marquage CE, pour l'usage précis que son fabricant annonce. Ce qui compte est la finalité annoncée.</p>
+${fig("Dispositif médical, ou non ? Répondez pour chaque logiciel",w("dm"))}
+<h3>Le règlement sur l'IA : quatre niveaux de risque</h3>
+${fig("Choisissez un niveau",w("pyr"))}
+<h3>Un règlement appliqué par étapes</h3>
+${fig("Le calendrier du règlement sur l'IA",w("tl"),"Points pleins : déjà applicable. Points vides : à venir. Source : règlement (UE) 2024/1689, modifié par le règlement (UE) 2026/1744, vérifié en novembre 2026.")}
+<p style="max-width:720px">Les deux dernières dates ont été repoussées en 2026. Le marquage CE des dispositifs médicaux, lui, s'applique déjà.</p>
+<h3>Qui répond de quoi ?</h3>
+<div style="max-width:900px">${tb(["Acteur","Ce dont il répond"],[["L'éditeur, fabricant","Conformité, marquage CE, notice, surveillance après mise sur le marché"],["L'établissement","Usage conforme à la notice, formation, supervision, conservation des journaux"],["Le professionnel","Sa décision, l'information du patient, la traçabilité, le signalement"]])}</div>
+<p style="max-width:720px">Hors de la destination prévue, la responsabilité se déplace vers l'utilisateur.</p>
+${exo({t:"Cinq outils à situer",s:["A : rappel de prises. B : calcul de dose d'un anticoagulant. C : assistant d'accueil du site de l'officine. D : tri des candidatures à l'hôpital. E : TacroAlerte.","Pour chacun : traite-t-il des données de santé ?","Est-ce un dispositif médical ?","Quel niveau de risque au sens du règlement sur l'IA ?"],d:"5 minutes",m:"papier et crayon",p:"un tableau de cinq lignes et trois colonnes",
+ c:tb(["Outil","Données de santé","Dispositif médical","Règlement sur l'IA"],[["A. Rappel de prises","Oui","En général non","Risque minimal"],["B. Calcul de dose","Oui","Oui","Haut risque s'il comporte de l'IA"],["C. Assistant d'accueil","Possible","Non","Transparence"],["D. Tri des candidatures","Non","Non","Haut risque (emploi)"],["E. TacroAlerte","Oui","Oui","Haut risque"]])})}
+</section>
+${cmp([["« On a retiré les noms : les données sont anonymes. »","Elles sont pseudonymisées : le RGPD s'applique toujours."],["« C'est marqué CE, on peut s'en servir pour tout. »","Le marquage vaut pour la destination écrite dans la notice."],["« En cas de problème, c'est l'éditeur qui répond. »","L'établissement et le professionnel répondent de l'usage."]])}
+${quiz([["Le nom est remplacé par un code ; l'hôpital conserve la table de correspondance. Le fichier est…",["anonyme","pseudonymisé","public"],1,"La table de correspondance existe : le fichier reste une donnée personnelle."],["TacroAlerte est-il un dispositif médical ?",["Oui : il aide à adapter un traitement","Non : c'est un logiciel","Seulement à l'hôpital"],0,"Ce qui compte est sa finalité : aider à adapter un traitement."],["Un outil marqué CE pour l'adulte est utilisé chez un enfant. Cet usage engage…",["l'éditeur seul","personne","l'utilisateur et l'établissement"],2,"Hors de la destination prévue, la responsabilité se déplace vers l'utilisateur et l'établissement."]])}
+${ret(["Une donnée de santé ne circule que pour un but précis, réduite au nécessaire et sécurisée.","Un outil qui aide à décider d'un traitement est un dispositif médical : vérifier le marquage CE et la destination.","L'éditeur répond de l'outil ; l'établissement et le professionnel répondent de l'usage."],"Supervision humaine et responsabilité. Qui décide quand l'outil se trompe ? Gardez votre fiche à portée de main.")}
+${ficheBlk(6)}${srcs([SRC.rgpd,SRC.mdr,SRC.aia,SRC.csp])}${pager(6)}</div>`;}
+
+/* ---------- Séance 7 ---------- */
+function fatigueSVG(){let s="";for(let i=0;i<100;i++){const c=i<49?"var(--red)":i<96?"var(--red-mid)":"var(--blue)";s+=`<circle cx="${14+(i%10)*28}" cy="${14+Math.floor(i/10)*28}" r="10" fill="${c}"/>`;}
+ const lg=[["var(--red)","49 passées outre dans toutes les études"],["var(--red-mid)","47 passées outre dans certaines études"],["var(--blue)","4 prises en compte partout"]];
+ lg.forEach(([c,t],k)=>{s+=`<circle cx="330" cy="${70+k*44}" r="10" fill="${c}"/><text x="350" y="${76+k*44}" class="tt">${t}</text>`;});
+ return `<svg viewBox="0 0 640 284" style="max-width:640px" role="img" aria-label="Cent alertes : 49 passées outre dans toutes les études, 47 dans certaines, 4 prises en compte partout">${s}</svg>`;}
+function s7(){return `<div class="page">${head(7,"Un outil ne décide pas : un professionnel décide avec un outil. Organiser cette supervision, puis rendre un verdict sur TacroAlerte.")}
+${situ(["<b>Lundi.</b> TacroAlerte n'alerte pas pour M. K. L'interne, rassuré, ne regarde pas le dosage arrivé le soir : 16 ng/mL. On s'en aperçoit dix jours plus tard.","<b>Jeudi.</b> Quatorze alertes dans la matinée. Elles sont toutes acquittées en deux minutes, sans qu'un dossier soit ouvert."],"Est-ce l'outil qui a failli, ou l'organisation autour de lui ?")}
+<section><h2>Quand l'humain suit la machine</h2>
+${poll("Lundi : pas d'alerte, dosage non lu, surexposition découverte dix jours après. Qui s'est trompé ?",["L'outil seul","L'interne seul","L'outil, de façon prévisible ; et personne ne l'a rattrapé"],2,"Un cas sur cinq échappe à l'outil : on le savait. Rien n'était prévu pour ces cas-là.")}
+<h3>Le biais d'automatisation</h3>
+<p>La tendance à se reposer sur une aide automatique, au-delà de ce qu'elle mérite. Il touche les débutants comme les experts, surtout quand le temps manque (Goddard et al., 2012).</p>
+${cols([["Erreur par omission","L'outil ne signale rien, donc on ne vérifie pas. C'est le lundi de M. K."],["Erreur par action","L'outil recommande, et on suit, même contre des éléments qui auraient dû alerter."]])}
+<h3>La fatigue d'alerte</h3>
+${fig("Sur 100 alertes de sécurité, entre 49 et 96 sont passées outre",fatigueSVG(),"Alertes de sécurité des logiciels de prescription, selon les études. Source : van der Sijs et al., JAMIA, 2006.")}
+<p>Jeudi, dans le service : 14 alertes acquittées en deux minutes. Ce n'est pas de la négligence : quand la VPP est basse (séance 2), l'équipe apprend que l'alerte est le plus souvent fausse, et cesse de la lire.</p>
+${stmt("Superviser un outil, c'est être en mesure de lui dire non.")}
+<p>Si personne n'a le temps ni le droit de le contredire, c'est l'outil qui décide.</p>
+</section>
+<section><h2>Organiser la supervision</h2>
+${cols([["Comprendre","Connaître les limites de l'outil : séances 1 à 4."],["Voir","Accéder aux données d'entrée et aux raisons du score."],["Pouvoir","Avoir le temps et l'autorité de s'en écarter."],["Apprendre","Recevoir un retour : l'outil avait-il raison ?"]])}
+<p>S'il manque une seule de ces conditions, la supervision est une façade.</p>
+<h3>Un circuit qui protège le jugement</h3>
+${steps([["Analyser","Le pharmacien lit le dossier et se fait un avis."],["Consulter","Il regarde ensuite le score de l'outil."],["Confronter","En cas de désaccord, il cherche pourquoi."],["Décider","Il propose au médecin, et l'écrit au dossier."]])}
+<p>Se faire un avis avant de lire le score limite l'effet d'ancrage. Un désaccord est une information utile, pas un incident.</p>
+${exo({t:"Analyser les deux incidents",s:["Lundi et jeudi : nommez le mécanisme en jeu dans chaque incident.","Laquelle des quatre conditions manquait ?","Proposez deux mesures d'organisation par incident.","Lesquelles ne coûtent rien ?"],d:"5 minutes",m:"papier et crayon",p:"un tableau de deux lignes",
+ c:tb(["Incident","Mécanisme","Condition manquante","Mesure"],[["Lundi : dosage non regardé","Erreur par omission","Comprendre : 1 cas sur 5 échappe à l'outil","Tout dosage est lu, alerte ou non"],["Jeudi : alertes acquittées","Fatigue d'alerte","Pouvoir : pas de temps","Relever le seuil ; un temps dédié chaque jour"]])+`<p>Dans les deux cas, on corrige l'organisation, pas l'algorithme.</p>`})}
+</section>
+<section><h2>Tracer, informer, surveiller</h2>
+${tb(["À tracer dans le dossier","Exemple"],[["Le score et la version de l'outil","« Risque 62 %, TacroAlerte version 2.1 »"],["La décision prise","« Dosage anticipé demandé »"],["La raison en cas d'écart","« Pas d'alerte, mais antifongique introduit hier »"],["Le résultat observé ensuite","« 12,4 ng/mL au huitième jour »"]])}
+<p>Sans le résultat observé, personne ne peut savoir si l'outil se dégrade.</p>
+<h3>Informer le patient</h3>
+<p>L'article L. 4001-3 du code de la santé publique, issu de la loi de bioéthique de 2021, demande d'informer le patient. Dites qu'un logiciel est utilisé et à quoi il sert, qui vérifie ses résultats et qui décide, sans jargon :</p>
+<blockquote class="doc"><p>« Un logiciel nous aide à repérer les risques de surdosage. Je vérifie ses résultats, et c'est votre médecin qui décide. »</p></blockquote>
+<h3>Un outil se remesure</h3>
+${ul(["Les pratiques changent : nouvelle technique de dosage, nouveau protocole.","Les patients changent : plus âgés, autres traitements associés.","Chaque année : sensibilité, VPP et calibration, par sous-groupe.","Tout incident se signale : c'est la matériovigilance."])}
+</section>
+<section><h2>Le verdict</h2>
+<p>Votre fiche d'évaluation, en bas de cette page, rassemble les sept séances : c'est la matière de votre décision.</p>
+${exo({t:"Rendre un verdict sur TacroAlerte",s:["Relisez la fiche complète.","Choisissez : installer, installer sous conditions, ou refuser.","Si « sous conditions » : écrivez trois conditions vérifiables.","Rédigez dix lignes à l'intention du chef de service."],d:"15 minutes",m:"votre fiche d'évaluation complète",p:"une décision, trois conditions, dix lignes",w:w("verdict"),
+ c:`<h3 style="margin-top:0">Une décision défendable : installer sous conditions</h3>${cols([["Un usage borné","Aide au repérage, seuil documenté ; jamais seul après 65 ans."],["Des chiffres locaux","Six mois d'observation, puis recalibrage avec les données du service."],["Une organisation","Tout dosage est lu, les écarts sont tracés, bilan chaque année."]])}<p>Refuser est tout aussi défendable si ces conditions ne peuvent pas être tenues.</p><h3>Une grille pour vous relire, sur 20</h3>${tb(["Critère","Ce que l'on attend","Points"],[["Exactitude","Les notions sont employées correctement","6"],["Preuves","La décision s'appuie sur les chiffres de la fiche","5"],["Réalisme","Les conditions sont vérifiables par le service","5"],["Clarté","Un chef de service pressé comprend à la première lecture","4"]])}`})}
+</section>
+${cmp([["« Il y a un humain dans la boucle, donc c'est sûr. »","Seulement s'il a le temps, les informations et l'autorité pour dire non."],["« L'outil n'a pas alerté : il n'y a rien. »","Avec 80 % de sensibilité, un cas sur cinq passe sans alerte."],["« L'outil a été validé à l'installation. »","Sa performance se remesure chaque année."]])}
+${quiz([["L'outil ne signale rien et le pharmacien ne vérifie pas le dosage. C'est une erreur…",["par omission","par action","de calibration"],0,"L'outil se tait et personne ne vérifie : c'est une erreur par omission."],["Pour réduire la fatigue d'alerte, on agit d'abord sur…",["la couleur de l'alerte","la valeur prédictive des alertes","le nombre d'utilisateurs"],1,"Des alertes plus souvent justes sont plus souvent lues."],["Dans le dossier, on trace le score, la décision et…",["rien d'autre","le nom de l'éditeur","le résultat observé ensuite"],2,"Sans le résultat observé, impossible de savoir si l'outil se dégrade."]])}
+<section><h2>Les sept questions du cours</h2>
+<p>Elles valent pour tout outil d'IA que vous rencontrerez, à l'hôpital, à l'officine ou dans l'industrie.</p>
+${tb(["Séance","La question à poser"],GRID.map((g,i)=>[`${i+1}. ${g[0]}`,g[1]]))}
+</section>
+${ret(["Lire une étude d'IA et en repérer les faiblesses.","Traduire une performance en erreurs concrètes, pour vos patients.","Encadrer un outil : limites écrites, données protégées, décision tracée."],"Gardez la fiche et les sept questions : elles s'appliquent aussi aux outils qui n'existent pas encore.","Et ensuite","Ce que vous savez faire maintenant")}
+${ficheBlk(7)}${srcs([SRC.godd,SRC.sijs,SRC.csp])}${pager(7)}</div>`;}
+
+/* ---------- Fiche complète ---------- */
+function ficheView(){return `<div class="page"><p class="k">Le fil rouge du cours</p><h1 tabindex="-1">La fiche d'évaluation de TacroAlerte</h1><p class="lead">Une ligne par séance. Remplissez-les au fil du cours, ou affichez la fiche complète pour réviser.</p>
+<section style="max-width:none"><div class="fiche" data-cur="0"></div><div class="ctl"><button type="button" class="btn" data-fillall>Afficher la fiche complète</button><button type="button" class="btn ghost" data-clear>Vider la fiche</button></div></section>
+<section><h2>La décision proposée en correction</h2><p>Installer sous conditions : un usage borné (jamais seul après 65 ans), des chiffres locaux (six mois d'observation, puis recalibrage), une organisation (tout dosage est lu, les écarts sont tracés, bilan chaque année). Refuser est aussi défendable si ces conditions ne peuvent pas être tenues.</p><p><a href="#seance-7">Revoir la séance 7</a></p></section>
+${srcs([SRC.wong,SRC.zech,SRC.ober,SRC.sjod,SRC.bdpm,SRC.thes,SRC.crat,SRC.rgpd,SRC.mdr,SRC.aia,SRC.csp,SRC.godd,SRC.sijs],"Toutes les sources du cours. Les chiffres de TacroAlerte sont fictifs.")}</div>`;}
+
+function fiche(el,cur,anim){
+ el.innerHTML=`<div class="fi"><div class="fi-r fi-h" aria-hidden="true"><span>Rubrique</span><span>La question à poser</span><span>Ce que nous savons de TacroAlerte</span></div>${GRID.map((g,i)=>{const n=i+1,a=anim==="all"||anim===n;return `<div class="fi-r${n===cur?" cur":""}"><span class="fi-a">${n}. ${g[0]}</span><span class="fi-b">${g[1]}</span>${done.has(n)?`<span class="fi-c${a?" write":""}"${anim==="all"?` style="animation-delay:${i*160}ms"`:""}>${g[2]}</span>`:`<span class="fi-e"><span class="sr">Ligne à remplir</span></span>`}</div>`;}).join("")}</div>`;
+ typo(el);
+ const b=el.parentElement&&el.parentElement.querySelector(`[data-fill="${cur}"]`);
+ if(b){b.textContent=done.has(cur)?`Ligne ${cur} remplie`:`Remplir la ligne ${cur}`;b.disabled=done.has(cur);}
+}
+
+/* ---------- Figures interactives ---------- */
+const W={};
+W.hero=el=>{const ev=[3,8,14,21,27,35,36,42,49,53,58,60,67,71,76,82,85,90,94,99];let s="";
+ for(let i=0;i<100;i++){const k=ev.indexOf(i);s+=`<circle cx="${18+(i%10)*36}" cy="${18+Math.floor(i/10)*36}" r="12" class="hd${k>=0?" ev":""}"${k>=0?` style="--d:${300+k*70}ms"`:""}/>`;}
+ el.innerHTML=`<svg viewBox="0 0 360 360" role="img" aria-label="Cent points : les 1 000 visites du CHU B, dont 200 suivies d'une surexposition">${s}</svg>`;};
+
+W.leak=el=>{const A=["AATATA","ATAAAT","TAAATA","AATAAA","ATATAA","AAATAT"],B=["AAAAAA","AAAAAA","AAAAAA","AAAAAA","TTTTTT","TTTTTT"];let s="";
+ for(let r=0;r<6;r++){s+=`<text x="0" y="${33+r*40}" class="tk">Patient ${r+1}</text>`;for(let c=0;c<6;c++)s+=`<circle class="lk" data-r="${r}" data-c="${c}" cx="${110+c*40}" cy="${28+r*40}" r="13"/>`;}
+ el.innerHTML=`<div class="ctl"><div class="grp" role="group" aria-label="Façon de partager les visites"><button type="button" class="seg" data-m="v" aria-pressed="true">Partage par visite</button><button type="button" class="seg" data-m="p" aria-pressed="false">Partage par patient</button></div></div><svg viewBox="0 0 340 250" style="max-width:420px" role="img" aria-label="Six patients, six visites chacun, répartis entre apprentissage et test">${s}<text x="110" y="248" class="tk">visites 1 à 6, dans l'ordre</text></svg><p class="cap"><span class="sw sw-b"></span>apprentissage <span class="sw sw-o"></span>test</p><p class="say" aria-live="polite"></p>`;
+ const set=m=>{const P=m==="v"?A:B;$$(".lk",el).forEach(d=>d.classList.toggle("test",P[+d.dataset.r][+d.dataset.c]==="T"));$$(".seg",el).forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.m===m)));$(".say",el).textContent=fr(m==="v"?"Chaque patient a des visites des deux côtés. Au test, le modèle reconnaît des patients qu'il a déjà vus : le résultat est trop beau.":"Les patients 5 et 6 sont entièrement dans le test. Le modèle est jugé sur des patients qu'il n'a jamais vus.");};
+ $$(".seg",el).forEach(b=>b.onclick=()=>set(b.dataset.m));set("v");};
+
+function choices(el,items,opts){
+ el.innerHTML=`<ul class="sort">${items.map((it,i)=>`<li data-i="${i}"><span class="sv">${it[0]}</span><span class="grp" role="group" aria-label="${(it[3]||"Réponse "+(i+1)).replace(/"/g,"")}">${opts.map((o,j)=>`<button type="button" class="seg sm" data-a="${j}" aria-pressed="false">${o}</button>`).join("")}</span><p class="fb" aria-live="polite"></p></li>`).join("")}</ul><p class="say"></p>`;
+ const score=()=>{const a=$$(".sort li.ok,.sort li.ko",el).length,ok=$$(".sort li.ok",el).length;$(".say",el).textContent=fr(a<items.length?`${ok} juste${ok>1?"s":""} sur ${a} réponse${a>1?"s":""}. Encore ${items.length-a} à faire.`:`${ok} sur ${items.length}.${ok===items.length?" Tout est juste.":" Revoyez les lignes en rouge."}`);};
+ $$(".sort li",el).forEach(li=>$$("button",li).forEach(b=>b.onclick=()=>{const it=items[+li.dataset.i],good=+b.dataset.a===it[1];$$("button",li).forEach(x=>x.setAttribute("aria-pressed",String(x===b)));li.classList.toggle("ok",good);li.classList.toggle("ko",!good);$(".fb",li).textContent=fr(good?`Bien vu. ${it[2]}`:"Pas tout à fait. Essayez une autre réponse.");score();}));}
+
+W.sorter=el=>choices(el,[["Les 3 derniers dosages",0,"Connus le jour de la visite : à conserver."],["Dose actuelle",0,"Connue : à conserver."],["Poids",0,"Connu : à conserver."],["Hématocrite",0,"Connu : à conserver."],["Médicaments associés",0,"Connus : à conserver."],["Ancienneté de la greffe",0,"Connue : à conserver."],["Dose prescrite à la visite suivante",1,"Décidée après le résultat du dosage : c'est une fuite, à retirer."],["Mention « surdosage » du compte rendu",1,"Rédigée après le dosage : c'est une fuite, à retirer."]],["Connue","Pas encore connue"]);
+W.match=el=>choices(el,[["A. Un outil de dermatologie entraîné surtout sur des photos de peaux claires.",0,"Représentation : les autres peaux manquent à l'apprentissage."],["B. Un score de fragilité qui apprend à partir du nombre de consultations passées.",2,"Critère de substitution : consulter peu ne veut pas dire aller bien."],["C. Un outil d'adaptation de dose validé chez l'adulte, utilisé en pédiatrie.",3,"Usage : la population n'est plus celle de la validation."],["D. Un score de gravité qui utilise la saturation mesurée au doigt.",1,"Mesure : l'erreur de l'oxymètre passe dans le score."]],["Représentation","Mesure","Critère de substitution","Usage"]);
+W.claims=el=>choices(el,[["« Le millepertuis est une plante naturelle, généralement bien tolérée. »",1,"Trompeur : c'est un inducteur enzymatique puissant. Thesaurus, RCP."],["« Il peut augmenter légèrement le taux de tacrolimus. »",1,"Faux : il le diminue. Thesaurus."],["« Il suffit d'espacer les deux prises de deux heures. »",1,"Faux : l'induction dure des jours, espacer les prises ne change rien. Thesaurus, RCP."],["« Source : ANSM, Bulletin de pharmacovigilance n° 47, 2021. »",2,"Référence introuvable sur le site de l'ANSM."]],["Juste","Faux","Invérifiable"]);
+W.dm=el=>choices(el,[["<b>Rappel de prise des médicaments</b><br><span class=\"mut\">Finalité : organisation</span>",1,"En général non : il organise les prises, il ne propose pas de traitement."],["<b>Dossier patient, gestion d'officine</b><br><span class=\"mut\">Finalité : stocker, transmettre</span>",1,"Non : il stocke et transmet des informations."],["<b>Calcul d'une dose pour un patient</b><br><span class=\"mut\">Finalité : traitement</span>",0,"Oui : il intervient dans la décision de traitement."],["<b>TacroAlerte</b><br><span class=\"mut\">Finalité : prédiction pour adapter un traitement</span>",0,"Oui : sa finalité est d'aider à adapter un traitement."]],["Oui","Non"]);
+
+function checker(el,F,okMsg,hint){
+ el.innerHTML=`<div class="chk">${F.map((f,i)=>`<label class="fld" for="ck-${i}"><span>${f[0]}</span><input class="inp" id="ck-${i}" inputmode="decimal" autocomplete="off"></label>`).join("")}</div><button type="button" class="btn" data-go>Vérifier mes réponses</button><p class="say" aria-live="polite"></p>`;
+ $("[data-go]",el).onclick=()=>{let ok=0,n=0;F.forEach((f,i)=>{const inp=$("#ck-"+i,el),v=parseFloat(inp.value.replace(/[\s  %]/g,"").replace(",","."));inp.classList.remove("ok","ko");if(isNaN(v))return;n++;const good=Math.abs(v-f[1])<=f[2]+1e-9;ok+=good;inp.classList.add(good?"ok":"ko");});
+  $(".say",el).textContent=fr(!n?"Remplissez au moins une case.":ok===F.length?okMsg:`${ok} juste${ok>1?"s":""} sur ${n}. ${hint}`);};}
+W.chk2=el=>checker(el,[["Vrais positifs",80,0],["Faux positifs",475,0],["Faux négatifs",20,0],["Vrais négatifs",1425,0],["VPP (%)",14.4,0.7],["VPN (%)",98.6,0.5]],"Tout est juste : la VPP tombe à 14 %.","Indice : commencez par les totaux de colonnes, 100 surexpositions et 1 900 visites sans.");
+W.cov=el=>checker(el,[["Taux de couverture (%)",81,0.5]],"81 % au lieu des 90 % annoncés : les intervalles sont trop étroits, l'outil est trop sûr de lui.","Divisez le nombre de mesures tombées dans l'intervalle par le nombre de prévisions.");
+
+function share(arr,total){const s=arr.reduce((a,b)=>a+b,0),raw=arr.map(v=>v/s*total),f=raw.map(Math.floor);let r=total-f.reduce((a,b)=>a+b,0);raw.map((v,i)=>[v-f[i],i]).sort((a,b)=>b[0]-a[0]).slice(0,r).forEach(([,i])=>f[i]++);return f;}
+W.sim=el=>{
+ const TH={10:[.95,.45],30:[.80,.75],50:[.55,.90],70:[.30,.97]};let t=30,p=20;
+ const dots=Array.from({length:100},(_,i)=>`<circle class="dt" cx="${15+(i%10)*28}" cy="${15+Math.floor(i/10)*28}" r="10" stroke-width="3.5"/>`).join("");
+ el.innerHTML=`<div class="ctl"><div><p class="lbl" id="th-l">Seuil d'alerte</p><div class="grp" role="group" aria-labelledby="th-l">${[10,30,50,70].map(v=>`<button type="button" class="seg" data-t="${v}" aria-pressed="${v===30}">${v} %</button>`).join("")}</div></div>
+ <div><label class="lbl" for="sim-p">Fréquence de la surexposition : <output id="sim-po">20 %</output></label><input type="range" id="sim-p" min="1" max="40" step="1" value="20"></div>
+ <div class="presets"><button type="button" class="chip" data-p="20" aria-pressed="true">CHU B, 20 %</button><button type="button" class="chip" data-p="5" aria-pressed="false">Patients stables, 5 %</button></div></div>
+ <div class="sim"><div><svg viewBox="0 0 280 280" style="max-width:300px" role="img" aria-label="Cent points, un pour dix visites, colorés selon la surexposition et l'alerte">${dots}</svg><p class="cap"><span class="sw sw-r"></span>surexposition <span class="sw sw-ring"></span>alerte. Un point = 10 visites.</p></div>
+ <div><div class="mx"><span></span><span class="h">Surexposition</span><span class="h">Pas de surexposition</span><span class="h">Total</span>
+ <span class="rh">Alerte</span><span class="c"><b class="n" data-k="tp"></b><span class="l">vrais positifs</span></span><span class="c e"><b class="n" data-k="fp"></b><span class="l">fausses alertes</span></span><span class="t" data-k="al"></span>
+ <span class="rh">Pas d'alerte</span><span class="c e"><b class="n" data-k="fn"></b><span class="l">surexpositions manquées</span></span><span class="c"><b class="n" data-k="tn"></b><span class="l">vrais négatifs</span></span><span class="t" data-k="na"></span>
+ <span class="rh">Total</span><span class="t" data-k="pos"></span><span class="t" data-k="neg"></span><span class="t">1 000</span></div>
+ <dl class="meas"><div><dt>Sensibilité</dt><dd data-k="se"></dd></div><div><dt>Spécificité</dt><dd data-k="sp"></dd></div><div class="vpp"><dt>VPP</dt><dd data-k="vpp"></dd></div><div><dt>VPN</dt><dd data-k="vpn"></dd></div><div><dt>Exactitude</dt><dd data-k="acc"></dd></div><div class="mute"><dt>Outil qui n'alerte jamais</dt><dd data-k="mute"></dd></div></dl></div></div>
+ <p class="say" data-k="say" aria-live="polite"></p>
+ <figure class="fig sub"><figcaption class="fig-t" data-k="ct"></figcaption><svg class="vc" viewBox="0 0 600 300" style="max-width:640px" role="img" aria-label="Valeur prédictive positive selon la fréquence de la surexposition"></svg></figure>`;
+ const K=k=>$(`[data-k="${k}"]`,el),C=$$(".dt",el),inp=$("#sim-p",el);
+ const CX=v=>60+v*13,CY=v=>250-v*2.2;
+ function upd(){
+  const [se,sp]=TH[t],q=p/100,N=1000,pos=Math.round(N*q),neg=N-pos,tp=Math.round(se*pos),fn=pos-tp,fp=Math.round((1-sp)*neg),tn=neg-fp;
+  const vpp=se*q/(se*q+(1-sp)*(1-q)),vpn=sp*(1-q)/(sp*(1-q)+(1-se)*q);
+  [["tp",tp],["fp",fp],["fn",fn],["tn",tn],["al",tp+fp],["na",fn+tn],["pos",pos],["neg",neg]].forEach(([k,v])=>K(k).textContent=nf(v));
+  K("se").textContent=pc(se);K("sp").textContent=pc(sp);K("vpp").textContent=pc(vpp);K("vpn").textContent=pc(vpn,vpn>.97?1:0);K("acc").textContent=pc(se*q+sp*(1-q));K("mute").textContent=pc(1-q);
+  $("#sim-po",el).textContent=p+NB+"%";
+  K("say").textContent=fr(`Sur 1 000 visites : ${nf(tp+fp)} alertes, dont ${nf(fp)} fausses. ${nf(fn)} surexpositions passent sans alerte. Sur 10 alertes, ${Math.round(10*vpp)} ${Math.round(10*vpp)>1?"sont justes":"est juste"}.`);
+  const sh=share([tp,fn,fp,tn],100);let a=0;
+  C.forEach((c,i)=>{const cat=i<sh[0]?0:i<sh[0]+sh[1]?1:i<sh[0]+sh[1]+sh[2]?2:3;c.style.fill=cat<2?"var(--red)":"var(--soft)";c.style.stroke=(cat===0||cat===2)?"var(--ink)":"transparent";});
+  const f=x=>{x/=100;return 100*se*x/(se*x+(1-sp)*(1-x));};let s="";
+  [0,25,50,75,100].forEach(v=>s+=`<line x1="60" x2="580" y1="${CY(v)}" y2="${CY(v)}" class="gl"/><text x="52" y="${CY(v)+5}" class="tk" text-anchor="end">${v} %</text>`);
+  [0,10,20,30,40].forEach(v=>s+=`<text x="${CX(v)}" y="272" class="tk" text-anchor="middle">${v} %</text>`);
+  s+=`<line x1="${CX(5)}" x2="${CX(5)}" y1="30" y2="250" class="ref"/><text x="${CX(5)+6}" y="42" class="tk">patients stables</text><line x1="${CX(20)}" x2="${CX(20)}" y1="30" y2="250" class="ref"/><text x="${CX(20)+6}" y="42" class="tk">CHU B</text>`;
+  let d="";for(let x=1;x<=40;x+=.5)d+=(x===1?"M":"L")+CX(x).toFixed(1)+" "+CY(f(x)).toFixed(1);
+  const v=f(p),right=p>30;s+=`<path d="${d}" class="cv-l"/><circle cx="${CX(p)}" cy="${CY(v)}" r="7" class="cv-p"/><text x="${CX(p)+(right?-12:12)}" y="${CY(v)-12}" class="cv-t" text-anchor="${right?"end":"start"}">VPP ${Math.round(v)} %</text>`;
+  s+=`<text x="60" y="16" class="ax">VPP</text><text x="${CX(20)}" y="296" class="ax" text-anchor="middle">Fréquence de la surexposition chez vos patients</text>`;
+  const vc=$(".vc",el);vc.innerHTML=s;typo(vc);
+  K("ct").textContent=fr(`La VPP au seuil de ${t} %, selon la fréquence de la surexposition`);
+  $$(".seg",el).forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.t===t)));
+  $$(".chip",el).forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.p===p)));
+ }
+ $$(".seg",el).forEach(b=>b.onclick=()=>{t=+b.dataset.t;upd();});
+ $$(".chip",el).forEach(b=>b.onclick=()=>{p=+b.dataset.p;inp.value=p;upd();});
+ inp.oninput=()=>{p=+inp.value;upd();};
+ upd();};
+
+W.regroup=el=>{
+ const D=[];for(let i=0;i<13;i++)D.push({g:0,d:i<12});for(let i=0;i<7;i++)D.push({g:1,d:i<4});
+ const order=[...D.keys()].sort((a,b)=>(D[b].d-D[a].d)||(a-b)),PA={},PG={};
+ order.forEach((k,j)=>PA[k]=[205+(j%10)*36,58+Math.floor(j/10)*40]);
+ const c=[0,0];D.forEach((d,k)=>{PG[k]=[205+c[d.g]*30,d.g?136:46];c[d.g]++;});
+ el.innerHTML=`<div class="ctl"><div class="grp" role="group" aria-label="Regroupement des patients"><button type="button" class="seg" data-m="all" aria-pressed="true">Tous ensemble</button><button type="button" class="seg" data-m="age" aria-pressed="false">Par âge</button></div></div>
+ <svg viewBox="0 0 600 172" style="max-width:640px" role="img" aria-label="Vingt points, un pour dix patients surexposés, signalés ou manqués par l'outil"><g class="lab-all"><text x="0" y="83" class="lb">Les 200 surexposés</text></g><g class="lab-age"><text x="0" y="51" class="lb">Moins de 65 ans</text><text x="0" y="141" class="lb">65 ans et plus</text></g>${D.map((d,k)=>`<circle r="12" class="rg${d.d?"":" miss"}" data-k="${k}" style="transition-delay:${k*25}ms"/>`).join("")}</svg><p class="say" aria-live="polite"></p>`;
+ const set=m=>{$$(".rg",el).forEach(cc=>{const P=(m==="all"?PA:PG)[+cc.dataset.k];cc.style.transform=`translate(${P[0]}px,${P[1]}px)`;});el.classList.toggle("m-age",m==="age");$$(".seg",el).forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.m===m)));$(".say",el).textContent=fr(m==="all"?"160 surexpositions signalées sur 200 : 80 %. Cliquez sur « Par âge ».":"Moins de 65 ans : 118 sur 130, soit 91 %. 65 ans et plus : 42 sur 70, soit 60 %.");};
+ $$(".seg",el).forEach(b=>b.onclick=()=>set(b.dataset.m));set("all");requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add("ready")));};
+
+W.ci=el=>{const X=v=>40+v*5.2;let g="";[0,25,50,75,100].forEach(v=>{g+=`<line x1="${X(v)}" y1="18" x2="${X(v)}" y2="160" class="gl"/><text x="${X(v)}" y="184" class="tk" text-anchor="middle">${v} %</text>`;});
+ el.innerHTML=`<label class="lbl" for="ci-n">Surexpositions chez les 65 ans et plus : <output id="ci-o">70</output> cas</label><input type="range" id="ci-n" min="5" max="200" step="1" value="70">
+ <svg viewBox="0 0 600 196" style="max-width:640px;margin-top:10px" role="img" aria-label="Sensibilité et intervalle de confiance à 95 % dans deux groupes d'âge">${g}
+ <text x="${X(0)}" y="40" class="lb">Moins de 65 ans : 91 % sur 130 cas (86 à 96 %)</text><line x1="${X(85.8)}" y1="62" x2="${X(95.7)}" y2="62" class="wh-b"/><line x1="${X(85.8)}" y1="52" x2="${X(85.8)}" y2="72" class="wh-b"/><line x1="${X(95.7)}" y1="52" x2="${X(95.7)}" y2="72" class="wh-b"/><circle cx="${X(90.8)}" cy="62" r="9" class="pt-b"/>
+ <text x="${X(0)}" y="112" class="lb" data-k="l2"></text><line data-k="w" y1="134" y2="134" class="wh-r"/><line data-k="c1" y1="124" y2="144" class="wh-r"/><line data-k="c2" y1="124" y2="144" class="wh-r"/><circle cx="${X(60)}" cy="134" r="9" class="pt-r"/></svg><p class="say" aria-live="polite"></p>`;
+ const inp=$("#ci-n",el),A=(k,o)=>Object.entries(o).forEach(([a,v])=>$(`[data-k="${k}"]`,el).setAttribute(a,v));
+ const upd=()=>{const n=+inp.value,h=196*Math.sqrt(.24/n),lo=Math.max(0,60-h),hi=Math.min(100,60+h);$("#ci-o",el).textContent=n;A("w",{x1:X(lo),x2:X(hi)});A("c1",{x1:X(lo),x2:X(lo)});A("c2",{x1:X(hi),x2:X(hi)});
+  $('[data-k="l2"]',el).textContent=fr(`65 ans et plus : 60 % sur ${n} cas (${Math.floor(lo)} à ${Math.ceil(hi)} %)`);
+  $(".say",el).textContent=fr(hi>=85.8?"Les deux intervalles se recouvrent : avec si peu de cas, on ne peut pas conclure à un écart.":"Les deux intervalles ne se recouvrent pas : le hasard seul explique mal l'écart.");};
+ inp.oninput=upd;upd();};
+
+W.calib=el=>{
+ const B=[["Moins de 10 %",370,5,10],["10 à 30 %",270,19,30],["30 à 50 %",170,40,50],["50 à 70 %",106,60,50],["70 % et plus",84,85,60]].map(([l,n,a,e])=>({l,n,a,e,o:100*e/n}));
+ const X=v=>50+v*3.4,Y=v=>360-v*3.4;let mode="raw",sel=4,g="";
+ [0,25,50,75,100].forEach(v=>{g+=`<line x1="${X(0)}" y1="${Y(v)}" x2="${X(100)}" y2="${Y(v)}" class="gl"/><line x1="${X(v)}" y1="${Y(0)}" x2="${X(v)}" y2="${Y(100)}" class="gl"/>`;});
+ [0,50,100].forEach(v=>{g+=`<text x="${X(v)}" y="382" class="tk" text-anchor="middle">${v} %</text><text x="42" y="${Y(v)+5}" class="tk" text-anchor="end">${v} %</text>`;});
+ el.innerHTML=`<div class="ctl"><div class="grp" role="group" aria-label="Affichage du diagramme"><button type="button" class="seg" data-m="raw" aria-pressed="true">Tel quel</button><button type="button" class="seg" data-m="rec" aria-pressed="false">Après recalibrage</button></div></div>
+ <div class="cal"><svg viewBox="0 0 410 410" role="img" aria-label="Diagramme de calibration : fréquence observée selon le risque annoncé, cinq tranches">${g}<line x1="${X(0)}" y1="${Y(0)}" x2="${X(100)}" y2="${Y(100)}" class="dg"/><text x="${X(100)}" y="${Y(100)-8}" class="tk" text-anchor="end">calibration parfaite</text><polyline class="cl"/>${B.map((b,i)=>`<circle class="cp" data-i="${i}" r="9" tabindex="0" role="button" aria-label="Tranche ${b.l}"/>`).join("")}<text x="${X(50)}" y="404" class="ax" text-anchor="middle">Risque annoncé</text><text x="${X(0)}" y="12" class="ax">Fréquence observée</text></svg>
+ <div><p class="lbl">Choisissez une tranche de risque annoncé</p><div class="bins">${B.map((b,i)=>`<button type="button" class="chip" data-i="${i}" aria-pressed="${i===sel}">${b.l}</button>`).join("")}</div><p class="say" aria-live="polite"></p>
+ <div class="minis"><figure><svg class="mini" data-k="a" viewBox="0 0 110 110" aria-hidden="true"></svg><figcaption class="cap" data-k="ca"></figcaption></figure><figure><svg class="mini" data-k="o" viewBox="0 0 110 110" aria-hidden="true"></svg><figcaption class="cap" data-k="co"></figcaption></figure></div></div></div>`;
+ const mini=(svg,k,cls)=>{svg.innerHTML=Array.from({length:100},(_,i)=>`<circle cx="${5.5+(i%10)*11}" cy="${5.5+Math.floor(i/10)*11}" r="4.2" class="${i<k?cls:"mo"}"/>`).join("");};
+ const draw=anim=>{
+  const pts=B.map(b=>[mode==="raw"?b.a:b.o,b.o]);
+  $$(".cp",el).forEach((c,i)=>{c.style.transform=`translate(${X(pts[i][0])}px,${Y(pts[i][1])}px)`;c.classList.toggle("sel",i===sel);});
+  const pl=$(".cl",el),setPl=()=>pl.setAttribute("points",pts.map(([a,o])=>`${X(a)},${Y(o)}`).join(" "));
+  if(anim&&!RM){pl.classList.add("mv");setTimeout(()=>{setPl();pl.classList.remove("mv");},720);}else setPl();
+  const b=B[sel],obs=Math.round(b.o),ann=mode==="raw"?b.a:obs;
+  $(".say",el).textContent=fr(mode==="raw"?`Tranche ${b.l} : l'outil annonce ${b.a} % en moyenne. Sur ces ${b.n} visites, ${b.e} surexpositions, soit ${obs} %. L'outil surestime.`:`Après recalibrage, l'outil annonce ${ann} % pour cette tranche : le chiffre affiché correspond à ce qu'on observe. L'ordre des patients ne change pas.`);
+  mini($('[data-k="a"]',el),ann,"ma");mini($('[data-k="o"]',el),obs,"mob");
+  $('[data-k="ca"]',el).textContent=fr(`Annoncé : ${ann} sur 100`);$('[data-k="co"]',el).textContent=fr(`Observé : ${obs} sur 100`);
+  $$(".chip",el).forEach((c,i)=>c.setAttribute("aria-pressed",String(i===sel)));};
+ $$(".seg",el).forEach(b=>b.onclick=()=>{mode=b.dataset.m;$$(".seg",el).forEach(x=>x.setAttribute("aria-pressed",String(x===b)));draw(true);});
+ $$(".chip",el).forEach(c=>c.onclick=()=>{sel=+c.dataset.i;draw(false);});
+ $$(".cp",el).forEach(c=>{c.onclick=()=>{sel=+c.dataset.i;draw(false);};c.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();sel=+c.dataset.i;draw(false);}};});
+ draw(false);requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add("ready")));};
+
+W.iv=el=>{const R=[["M. A.",8.1,6.0,10.4,0,70],["Mme B.",8.3,3.9,14.8,1,128]],X=v=>130+v*28;let s=`<rect x="${X(5)}" y="24" width="${X(10)-X(5)}" height="136" class="band"/><text x="${(X(5)+X(10))/2}" y="18" class="tk" text-anchor="middle">cible</text>`;
+ [0,5,10,15].forEach(v=>s+=`<line x1="${X(v)}" y1="24" x2="${X(v)}" y2="160" class="gl"/><text x="${X(v)}" y="182" class="tk" text-anchor="middle">${v}${v===15?" ng/mL":""}</text>`);
+ R.forEach(([n,v,a,b,r,y])=>{const c=r?"wh-r":"wh-b";s+=`<text x="0" y="${y+6}" class="lb">${n}</text><g class="wh" style="transform-origin:${X(v)}px ${y}px"><line x1="${X(a)}" y1="${y}" x2="${X(b)}" y2="${y}" class="${c}"/><line x1="${X(a)}" y1="${y-11}" x2="${X(a)}" y2="${y+11}" class="${c}"/><line x1="${X(b)}" y1="${y-11}" x2="${X(b)}" y2="${y+11}" class="${c}"/></g><circle cx="${X(v)}" cy="${y}" r="10" class="${r?"pt-r":"pt-b"}"/>`;});
+ el.innerHTML=`<div class="ctl"><button type="button" class="btn ghost" data-go aria-pressed="false">Montrer l'incertitude</button></div><svg viewBox="0 0 620 192" style="max-width:640px" role="img" aria-label="Deux prévisions de concentration presque identiques, avec des intervalles très différents">${s}</svg><p class="say" aria-live="polite"></p>`;
+ const svg=$("svg",el),b=$("[data-go]",el),set=on=>{svg.classList.toggle("on",on);b.textContent=on?"Masquer l'incertitude":"Montrer l'incertitude";b.setAttribute("aria-pressed",String(on));$(".say",el).textContent=fr(on?"M. A. : 8,1 ng/mL, entre 6,0 et 10,4. On peut s'y appuyer. Mme B. : 8,3 ng/mL, entre 3,9 et 14,8. L'outil ne sait pas : il faut doser.":"Sans intervalle, les deux prévisions se ressemblent : 8,1 et 8,3 ng/mL, dans la cible.");};
+ b.onclick=()=>set(!svg.classList.contains("on"));set(false);};
+
+W.gen=el=>{const WD=[["augmenter",41],["diminuer",38],["modifier",15],["stabiliser",6]],RIGHT=1,cnt=[0,0,0,0];let runs=0,timer=null;
+ el.innerHTML=`<p class="tok"><span class="tk-c">Le</span> <span class="tk-c">mille</span><span class="tk-c">pert</span><span class="tk-c">uis</span> <span class="tk-c">peut</span><span class="slot" aria-live="polite">?</span><span class="tk-c">le</span> <span class="tk-c">taux</span> <span class="tk-c">de</span> <span class="tk-c">tacrolimus</span></p>
+ <div class="ctl"><button type="button" class="btn" data-one>Écrire la suite</button><button type="button" class="btn ghost" data-many>Écrire 100 fois</button><button type="button" class="btn ghost" data-zero>Remettre à zéro</button></div>
+ <div class="gbars">${WD.map((x,i)=>`<div class="gb"><span class="gn">${x[0]}</span><span class="gt"><span class="gf ${i===RIGHT?"ok":"ko"}"></span></span><span class="gv">0</span></div>`).join("")}</div><p class="say" aria-live="polite"></p>`;
+ const slot=$(".slot",el),say=$(".say",el);
+ const pick=()=>{let r=Math.random()*100;for(let i=0;i<WD.length;i++){r-=WD[i][1];if(r<0)return i;}return WD.length-1;};
+ const show=()=>{$$(".gb",el).forEach((b,i)=>{$(".gf",b).style.width=(runs?cnt[i]/runs*100:0)+"%";$(".gv",b).textContent=cnt[i];});const wr=runs-cnt[RIGHT];say.textContent=fr(runs?`Sur ${runs} suite${runs>1?"s":""} écrite${runs>1?"s":""}, ${wr} ${wr>1?"sont fausses":"est fausse"}. Le seul mot juste est « diminuer », et le ton est le même à chaque fois.`:"Le seul mot juste est « diminuer ». Cliquez pour voir ce que le modèle écrit.");};
+ const put=(i,typed)=>{clearInterval(timer);const word=WD[i][0];slot.className="slot";if(!typed||RM){slot.textContent=word;slot.classList.add(i===RIGHT?"ok":"ko");return;}let k=0;slot.textContent="";timer=setInterval(()=>{slot.textContent=word.slice(0,++k);if(k>=word.length){clearInterval(timer);slot.classList.add(i===RIGHT?"ok":"ko");}},70);};
+ $("[data-one]",el).onclick=()=>{const i=pick();cnt[i]++;runs++;put(i,true);show();};
+ $("[data-many]",el).onclick=()=>{let last=0;for(let k=0;k<100;k++){last=pick();cnt[last]++;}runs+=100;put(last,false);show();};
+ $("[data-zero]",el).onclick=()=>{cnt.fill(0);runs=0;clearInterval(timer);slot.className="slot";slot.textContent="?";show();};
+ show();};
+
+W.reid=el=>{const YR=new Set([37,91,150,203,244,298,333,401,455]),ME=244,LB=["patients dans le fichier, sans les noms","nés la même année que Mme D.","née le même jour : c'est elle"],NN=[480,9,1];let cur=480;
+ el.innerHTML=`<div class="reid"><svg viewBox="0 0 336 280" style="max-width:360px" role="img" aria-label="480 points, un par patient du fichier">${Array.from({length:480},(_,i)=>`<circle cx="${7+(i%24)*14}" cy="${7+Math.floor(i/24)*14}" r="5" class="rd${YR.has(i)?" y":""}${i===ME?" me":""}"/>`).join("")}</svg>
+ <div><p class="cnt">480</p><p class="cnt-l" aria-live="polite"></p><div class="ctl"><button type="button" class="btn" data-s="1">Ajouter l'année de naissance</button><button type="button" class="btn" data-s="2">Ajouter le jour de naissance</button><button type="button" class="btn ghost" data-s="0">Recommencer</button></div></div></div>`;
+ const cnt=$(".cnt",el),count=to=>{const from=cur;cur=to;if(RM||from===to){cnt.textContent=nf(to);return;}const t0=performance.now(),d=700,step=tt=>{const k=Math.min(1,(tt-t0)/d),e=1-Math.pow(1-k,3);cnt.textContent=nf(from+(to-from)*e);if(k<1)requestAnimationFrame(step);};requestAnimationFrame(step);};
+ const go=s=>{el.classList.remove("s0","s1","s2");el.classList.add("s"+s);$(".cnt-l",el).textContent=fr(LB[s]);count(NN[s]);$('[data-s="1"]',el).disabled=s!==0;$('[data-s="2"]',el).disabled=s!==1;};
+ $$("[data-s]",el).forEach(b=>b.onclick=()=>go(+b.dataset.s));go(0);};
+
+W.pyr=el=>{const LV=[["Interdit","Manipulation des personnes, notation sociale : ces usages sont interdits dans l'Union européenne."],["Haut risque","L'IA d'un dispositif médical, comme TacroAlerte. Obligations : gestion des risques, qualité des données, documentation, supervision humaine."],["Transparence","Un assistant conversationnel : il faut dire qu'on parle à une IA."],["Risque minimal","Correcteur d'orthographe, filtre de courrier indésirable : pas d'obligation particulière."]],CL=["#8E1622","#D22B3A","#EE9CA4","#F6D3D6"],TX=["#FFFFFF","#FFFFFF","#101B3F","#101B3F"];let s="";
+ LV.forEach((l,i)=>{const y=8+i*70,a=22+i*45,b=67+i*45,cx=210;s+=`<g class="pl" data-i="${i}" tabindex="0" role="button" aria-label="${l[0]}"><polygon points="${cx-a},${y} ${cx+a},${y} ${cx+b},${y+64} ${cx-b},${y+64}" fill="${CL[i]}"/><text x="${cx}" y="${y+39}" text-anchor="middle" fill="${TX[i]}">${l[0]}</text></g>`;});
+ el.innerHTML=`<div class="pyr"><svg viewBox="0 0 420 290" style="max-width:420px" role="img" aria-label="Pyramide des quatre niveaux de risque du règlement sur l'IA, du plus grave en haut au plus faible en bas">${s}</svg><div aria-live="polite"><p class="pyr-t"></p><p class="pyr-d"></p></div></div>`;
+ const sel=i=>{$$(".pl",el).forEach((g,j)=>{g.classList.toggle("on",i===j);g.setAttribute("aria-pressed",String(i===j));});$(".pyr-t",el).textContent=LV[i][0];$(".pyr-d",el).textContent=fr(LV[i][1]);};
+ $$(".pl",el).forEach(g=>{g.onclick=()=>sel(+g.dataset.i);g.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();sel(+g.dataset.i);}};});sel(1);};
+
+W.tl=el=>{const E=[["2024-08-01","1er août 2024","Entrée en vigueur"],["2025-02-02","2 février 2025","Pratiques interdites"],["2025-08-02","2 août 2025","Modèles d'IA à usage général"],["2027-12-02","2 décembre 2027","Haut risque (annexe III)"],["2028-08-02","2 août 2028","IA des produits réglementés,|dont les dispositifs médicaux"]],AN=["start","middle","start","middle","end"];
+ const t0=Date.parse("2024-05-01"),t1=Date.parse("2028-11-01"),X=t=>50+(t-t0)/(t1-t0)*800,now=Date.now();let s=`<line x1="40" y1="120" x2="860" y2="120" class="ln"/>`;
+ if(now>t0&&now<t1){const x=X(now);s+=`<line x1="${x}" y1="74" x2="${x}" y2="146" class="today"/><text x="${x+6}" y="82" class="tk">aujourd'hui</text>`;}
+ E.forEach((e,i)=>{const t=Date.parse(e[0]),x=X(t),up=i%2===0,past=t<=now,lines=e[2].split("|"),an=AN[i],tx=an==="start"?x-10:an==="end"?x+10:x,y0=up?34:160;
+  s+=`<circle cx="${x}" cy="120" r="10" class="${past?"ev-p":"ev-f"}"/><text x="${tx}" y="${y0}" text-anchor="${an}" class="td">${e[1]}</text>${lines.map((l,j)=>`<text x="${tx}" y="${y0+21+j*19}" text-anchor="${an}" class="tt">${l}</text>`).join("")}`;});
+ el.innerHTML=`<div class="scroll"><svg viewBox="0 0 900 196" style="min-width:720px" role="img" aria-label="Calendrier d'application du règlement sur l'IA, de 2024 à 2028">${s}</svg></div>`;};
+
+W.verdict=el=>{const O=[["inst","Installer"],["cond","Installer sous conditions"],["ref","Refuser"]],FB={inst:"Installer sans condition revient à ignorer trois lignes de la fiche : 60 % de sensibilité après 65 ans, des chiffres surestimés au CHU B, une supervision à organiser.",cond:"C'est la décision proposée en correction. Vérifiez que chacune de vos conditions peut être contrôlée par le service.",ref:"Défendable, si le service ne peut pas tenir les conditions de la correction. Dites-le explicitement au chef de service."};
+ el.innerHTML=`<fieldset class="rad"><legend class="lbl">Votre décision</legend>${O.map(o=>`<label><input type="radio" name="vd" value="${o[0]}">${o[1]}</label>`).join("")}</fieldset><label class="lbl" for="vd-t">Vos trois conditions, ou vos raisons</label><textarea id="vd-t" placeholder="Écrivez ici avant de comparer."></textarea><button type="button" class="btn" data-go>Comparer avec la correction</button><p class="say" aria-live="polite"></p>`;
+ $("[data-go]",el).onclick=()=>{const c=$("input[name=vd]:checked",el);$(".say",el).textContent=fr(c?FB[c.value]+" Ouvrez ensuite la correction.":"Choisissez d'abord une décision.");};};
+
+/* ---------- Diapositives : lecteur pas à pas, chaque deck isolé dans son propre arbre ---------- */
+const DECKS=new Map(),POS=new Map();let DECKCSS=null;
+const BASE=`*{margin:0}.root>section{width:1920px!important;height:1080px!important;overflow:hidden!important;box-sizing:border-box!important;position:relative;isolation:isolate}aside,noscript{display:none!important}h1{font-size:96px;font-weight:600}h2{font-size:64px;font-weight:600}h3{font-size:44px;font-weight:600}p,li,h1,h2,h3{overflow-wrap:break-word;text-wrap:pretty}@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0ms!important;transition-duration:.01ms!important;transition-delay:0ms!important}}`;
+const getText=u=>fetch(u).then(r=>{if(!r.ok)throw new Error(u);return r.text();});
+async function loadDeck(n){if(DECKS.has(n))return DECKS.get(n);if(DECKCSS===null)DECKCSS=await getText("decks/deck.css");const d=JSON.parse(await getText(`decks/seance${n}.json`));DECKS.set(n,d);return d;}
+W.deck=el=>{
+ const n=+el.dataset.n;
+ el.innerHTML=`<div class="player" tabindex="0" role="region" aria-roledescription="diaporama" aria-label="Diapositives de la séance ${n}"><div class="stage"><div class="host"></div><p class="dk-msg">Chargement des diapositives…</p></div><div class="dk-prog" aria-hidden="true"><span></span></div>
+ <div class="dk-ctl"><button type="button" class="btn ghost" data-dk="prev">Précédent</button><button type="button" class="btn" data-dk="next">Suivant</button><p class="dk-pos" aria-live="polite"></p><select class="dk-sel" aria-label="Aller à une diapositive"></select><button type="button" class="btn ghost" data-dk="notes" aria-pressed="false">Texte de la vidéo</button><button type="button" class="btn ghost" data-dk="fs">Plein écran</button></div>
+ <div class="dk-notes" hidden><p class="k">Texte de la vidéo</p><p class="dk-nt"></p></div></div>
+ <p class="cap">Cliquez sur la diapositive, ou utilisez les flèches du clavier, pour avancer étape par étape.</p>`;
+ const P=$(".player",el),stage=$(".stage",el),host=$(".host",el),sel=$(".dk-sel",el),fsb=$('[data-dk="fs"]',el),sh=host.attachShadow({mode:"open"});
+ let deck=null,root=null,i=0,s=0,idx=[];
+ const isFs=()=>document.fullscreenElement===P||P.classList.contains("fsx");
+ const fit=()=>{const w=stage.clientWidth,h=stage.clientHeight;if(!w||!h)return;const k=Math.min(w/1920,h/1080);host.style.transform=`translate(${(w-1920*k)/2}px,${(h-1080*k)/2}px) scale(${k})`;fsb.textContent=isFs()?"Quitter le plein écran":"Plein écran";};
+ if(window.ResizeObserver)new ResizeObserver(fit).observe(stage);else window.addEventListener("resize",fit);
+ const upd=()=>{const N=deck.slides.length;$(".dk-pos",el).textContent=fr(`Diapositive ${i+1} sur ${N}`+(idx.length?`, étape ${s} sur ${idx.length}`:""));
+  $(".dk-prog span",el).style.width=`${(i+(idx.length?s/idx.length:1))/N*100}%`;sel.value=String(i);
+  $(".dk-nt",el).textContent=deck.slides[i].notes||"Pas de texte pour cette diapositive.";
+  $('[data-dk="prev"]',el).disabled=i===0&&s===0;$('[data-dk="next"]',el).disabled=i===N-1&&s===idx.length;};
+ const apply=()=>{const thr=s?idx[s-1]:-Infinity;root.querySelectorAll(".fragment").forEach(f=>f.classList.toggle("visible",(+f.dataset.fragmentIndex||0)<=thr));upd();};
+ const show=(j,atEnd)=>{i=Math.max(0,Math.min(deck.slides.length-1,j));root.innerHTML=deck.slides[i].html;const sec=root.firstElementChild;if(sec)sec.style.counterReset=`page ${i}`;
+  idx=[...new Set([...root.querySelectorAll(".fragment")].map(f=>+f.dataset.fragmentIndex||0))].sort((a,b)=>a-b);s=atEnd?idx.length:0;apply();POS.set(n,i);};
+ const next=()=>{if(!deck)return;if(s<idx.length){s++;apply();}else if(i<deck.slides.length-1)show(i+1,false);};
+ const prev=()=>{if(!deck)return;if(s>0){s--;apply();}else if(i>0)show(i-1,true);};
+ stage.addEventListener("click",()=>{P.focus({preventScroll:true});next();});
+ $('[data-dk="next"]',el).onclick=next;$('[data-dk="prev"]',el).onclick=prev;
+ sel.onchange=()=>{if(deck)show(+sel.value,false);};
+ $('[data-dk="notes"]',el).onclick=e=>{const b=e.currentTarget,box=$(".dk-notes",el),on=box.hidden;box.hidden=!on;b.setAttribute("aria-pressed",String(on));b.textContent=on?"Masquer le texte":"Texte de la vidéo";};
+ fsb.onclick=()=>{if(document.fullscreenElement===P){document.exitFullscreen().catch(()=>{});return;}if(P.classList.contains("fsx")){P.classList.remove("fsx");fit();return;}
+  const fall=()=>{P.classList.add("fsx");fit();};try{const r=P.requestFullscreen?P.requestFullscreen():null;if(r&&r.catch)r.catch(fall);else if(!r)fall();}catch(err){fall();}P.focus({preventScroll:true});};
+ P.addEventListener("keydown",e=>{if(e.target.tagName==="SELECT")return;const N=deck?deck.slides.length:0;
+  if(e.key==="ArrowRight"||e.key==="PageDown"||(e.key===" "&&e.target===P)){e.preventDefault();next();}
+  else if(e.key==="ArrowLeft"||e.key==="PageUp"){e.preventDefault();prev();}
+  else if(e.key==="Home"&&deck){e.preventDefault();show(0,false);}else if(e.key==="End"&&deck){e.preventDefault();show(N-1,true);}
+  else if(e.key==="Escape"&&P.classList.contains("fsx")){P.classList.remove("fsx");fit();}});
+ loadDeck(n).then(d=>{deck=d;sh.innerHTML=`<style>${BASE}${DECKCSS}</style><div class="root"></div>`;root=sh.querySelector(".root");
+  sel.innerHTML=d.sections.map((sc,k)=>{const end=k+1<d.sections.length?d.sections[k+1].start:d.slides.length;return `<optgroup label="${sc.label.replace(/"/g,"")}">${d.slides.slice(sc.start,end).map((sl,j)=>`<option value="${sc.start+j}">${sc.start+j+1}. ${sl.title.replace(/</g,"&lt;")}</option>`).join("")}</optgroup>`;}).join("");
+  $(".dk-msg",el).remove();show(POS.get(n)||0,false);fit();})
+ .catch(()=>{$(".dk-msg",el).textContent=fr("Les diapositives n'ont pas pu être chargées. Rechargez la page.");});
+};
+
+/* ---------- Routage et interactions ---------- */
+const SEANCES=[s1,s2,s3,s4,s5,s6,s7],VIEWS={accueil:home,fiche:ficheView};SEANCES.forEach((f,i)=>VIEWS["seance-"+(i+1)]=f);
+function route(first){
+ const h=decodeURIComponent(location.hash.slice(1)),v=VIEWS[h]?h:"accueil",m=$("#main");RID=0;
+ m.innerHTML=VIEWS[v]();
+ $$("[data-w]",m).forEach(e=>{if(W[e.dataset.w])W[e.dataset.w](e);});
+ $$(".fiche",m).forEach(e=>fiche(e,+e.dataset.cur));
+ typo(m);
+ $$(".nav a").forEach(a=>a.removeAttribute("aria-current"));const cur=$(`.nav a[href="#${v}"]`);if(cur)cur.setAttribute("aria-current","page");
+ document.title=v==="accueil"?"IA responsable et santé numérique":v==="fiche"?"Fiche d’évaluation, IA responsable et santé numérique":`Séance ${v.slice(7)}, IA responsable et santé numérique`;
+ if(!first){window.scrollTo(0,0);const h1=$("h1",m);if(h1)h1.focus({preventScroll:true});}
+}
+document.addEventListener("click",e=>{
+ const r=e.target.closest(".rv");
+ if(r){const box=document.getElementById(r.getAttribute("aria-controls")),open=r.getAttribute("aria-expanded")!=="true";r.setAttribute("aria-expanded",String(open));box.hidden=!open;box.classList.toggle("open",open);r.textContent=fr(open?(r.dataset.l==="Voir la correction"?"Masquer la correction":"Masquer"):r.dataset.l);return;}
+ const o=e.target.closest(".opt");
+ if(o){const qi=o.closest(".qi");if(qi.classList.contains("done"))return;qi.classList.add("done");const a=+qi.dataset.ans,j=+o.dataset.j;
+  $$(".opt",qi).forEach(x=>{x.disabled=true;if(+x.dataset.j===a){x.classList.add("ok");$(".tag",x).textContent="Bonne réponse";}});
+  if(j!==a){o.classList.add("ko");$(".tag",o).textContent="Votre réponse";}
+  const wy=$(".why",qi);wy.hidden=false;wy.insertAdjacentHTML("afterbegin",`<b>${j===a?"Juste.":"Pas tout à fait."}</b> `);typo(wy);return;}
+ const f=e.target.closest("[data-fill]");
+ if(f){const n=+f.dataset.fill;done.add(n);save();const fe=f.parentElement.querySelector(".fiche");if(fe)fiche(fe,n,n);return;}
+ if(e.target.closest("[data-fillall]")){for(let i=1;i<=7;i++)done.add(i);save();fiche($(".fiche"),0,"all");return;}
+ if(e.target.closest("[data-clear]")){done.clear();save();fiche($(".fiche"),0);return;}
+});
+window.addEventListener("hashchange",()=>route(false));
+route(true);
+</script>
+</body>
+</html>
